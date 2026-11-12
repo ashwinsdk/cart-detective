@@ -25,11 +25,11 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 - [x] Acceptance Criteria: `make test` and `make lint` execute and pass on both backend and frontend.
 
 ### Phase 1: Data Model, Migrations, and Repository Layer
-- [ ] Branch: `phase/1-data-model`
-- [ ] Implement SQLAlchemy declarative async models: Search, Run, Product, Offer, Review, Video, Evidence, WishlistItem, Purchase, Setting.
-- [ ] Implement repository pattern for all core entities with async session management.
-- [ ] Unit tests for database models, constraints, and cascades.
-- [ ] Acceptance Criteria: Database migrations run, CRUD integration tests pass without errors.
+- [x] Branch: `phase/1-data-model`
+- [x] Implement SQLAlchemy declarative async models: Search, Run, Product, Offer, Review, Video, Evidence, WishlistItem, Purchase, Setting.
+- [x] Implement repository pattern for all core entities with async session management.
+- [x] Unit tests for database models, constraints, and cascades.
+- [x] Acceptance Criteria: Database migrations run, CRUD integration tests pass without errors.
 
 ### Phase 2: Shared Fetch Layer and LLM Provider Interface
 - [ ] Branch: `phase/2-fetch-llm`
