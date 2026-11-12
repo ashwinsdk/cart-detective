@@ -68,12 +68,12 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 - [x] Acceptance Criteria: SSE stream emits stage progress from start to completion; frontend receives and renders live updates.
 
 ### Phase 7: Frontend Core, Design System, Search, and Live Run
-- [ ] Branch: `phase/7-frontend-search`
-- [ ] Implement monochrome design tokens, dark and light theme toggle with zero flash.
-- [ ] Build shared shadcn/ui components adhering to `docs/UI_GUIDELINES.md`.
-- [ ] Build Search input form with comprehensive validation.
-- [ ] Build Live Run progress view with real-time SSE stage indicators and log console.
-- [ ] Acceptance Criteria: Search form dispatches run, displays live progress without console errors.
+- [x] Branch: `phase/7-frontend-search`
+- [x] Implement monochrome design tokens, dark and light theme toggle with zero flash.
+- [x] Build shared shadcn/ui components adhering to `docs/UI_GUIDELINES.md`.
+- [x] Build Search input form with comprehensive validation.
+- [x] Build Live Run progress view with real-time SSE stage indicators and log console.
+- [x] Acceptance Criteria: Search form dispatches run, displays live progress without console errors.
 
 ### Phase 8: Frontend Results, Comparison, Workspace, and Settings
 - [ ] Branch: `phase/8-frontend-views`

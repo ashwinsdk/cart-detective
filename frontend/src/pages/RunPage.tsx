@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { CheckCircle2, Clock, ExternalLink, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Clock, ExternalLink, ShieldCheck, AlertCircle } from "lucide-react";
 import { getRun, getRunProducts } from "../api/client";
+import { Badge } from "../components/ui/Badge";
+import { Progress } from "../components/ui/Progress";
 
 interface RunData {
   id: string;
@@ -41,32 +43,35 @@ export function RunPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [events, setEvents] = useState<string[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [filterLevel, setFilterLevel] = useState<string>("ALL");
 
   useEffect(() => {
     if (!runId) return;
 
-    // Initial fetch
-    getRun(runId).then((data) => {
-      setRun(data);
-      if (data.status === "completed") {
-        setIsCompleted(true);
-        getRunProducts(runId).then(setProducts);
-      }
-    });
+    getRun(runId)
+      .then((data) => {
+        setRun(data);
+        if (data.status === "completed") {
+          setIsCompleted(true);
+          getRunProducts(runId).then(setProducts);
+        }
+      })
+      .catch((err) => {
+        setEvents((prev) => [...prev, `Failed to load run: ${err.message}`]);
+      });
 
-    // Subscribe to SSE
     const apiBase = import.meta.env.VITE_API_BASE_URL || "";
     const eventSource = new EventSource(`${apiBase}/api/runs/${runId}/stream`);
 
     eventSource.addEventListener("stage_start", (e) => {
       const data = JSON.parse(e.data);
-      setEvents((prev) => [...prev, `Stage ${data.stage} started: ${data.name}`]);
+      setEvents((prev) => [...prev, `[Stage ${data.stage}] Started: ${data.name}`]);
       setRun((prev) => (prev ? { ...prev, current_stage: data.stage } : null));
     });
 
     eventSource.addEventListener("stage_complete", (e) => {
       const data = JSON.parse(e.data);
-      setEvents((prev) => [...prev, `Stage ${data.stage} completed: ${data.name}`]);
+      setEvents((prev) => [...prev, `[Stage ${data.stage}] Completed: ${data.name}`]);
       setRun((prev) => (prev ? { ...prev, stage_progress: data.progress } : null));
     });
 
@@ -77,13 +82,13 @@ export function RunPage() {
     });
 
     eventSource.addEventListener("error", (e: Event) => {
-      const messageEvent = e as MessageEvent;
-      if (messageEvent.data) {
+      const msg = (e as MessageEvent).data;
+      if (msg) {
         try {
-          const data = JSON.parse(messageEvent.data);
-          setEvents((prev) => [...prev, `Error: ${data.message}`]);
+          const data = JSON.parse(msg);
+          setEvents((prev) => [...prev, `[ERROR] ${data.message}`]);
         } catch {
-          // Stream closed or error
+          // Stream error
         }
       }
     });
@@ -93,9 +98,15 @@ export function RunPage() {
     };
   }, [runId]);
 
+  const filteredLogs = events.filter((e) => {
+    if (filterLevel === "WARNING") return e.includes("WARNING") || e.includes("ERROR");
+    if (filterLevel === "ERROR") return e.includes("ERROR");
+    return true;
+  });
+
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-8">
-      {/* Header */}
+      {/* Run Header */}
       <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4 flex items-center justify-between">
         <div>
           <div className="text-xs font-mono uppercase tracking-wider text-neutral-500">
@@ -106,10 +117,19 @@ export function RunPage() {
           </h1>
         </div>
         <div>
-          <span className="inline-flex items-center px-2 py-0.5 text-xs font-mono border rounded-sm uppercase tracking-wider border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200">
+          <Badge variant={isCompleted ? "success" : "default"}>
             {isCompleted ? "Completed" : run?.status || "Running"}
-          </span>
+          </Badge>
         </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-xs font-mono text-neutral-600 dark:text-neutral-400">
+          <span>Pipeline Progress</span>
+          <span>{isCompleted ? "100%" : `${Math.round(run?.stage_progress || 0)}%`}</span>
+        </div>
+        <Progress value={isCompleted ? 100 : run?.stage_progress || 0} />
       </div>
 
       {/* Stage Grid */}
@@ -122,7 +142,7 @@ export function RunPage() {
           return (
             <div
               key={s.num}
-              className={`p-3 border rounded-sm text-xs ${
+              className={`p-3 border rounded-sm text-xs transition-colors ${
                 isDone
                   ? "border-neutral-300 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900"
                   : isActive
@@ -146,12 +166,32 @@ export function RunPage() {
 
       {/* Live Event Console */}
       <div className="border border-neutral-200 dark:border-neutral-800 rounded-sm bg-neutral-50 dark:bg-neutral-900/50 p-4 font-mono text-xs">
-        <div className="text-neutral-500 uppercase tracking-wider mb-2">Live Pipeline Feed</div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-neutral-500 uppercase tracking-wider">Live Pipeline Telemetry</span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setFilterLevel("ALL")}
+              className={`px-1.5 py-0.5 rounded-sm ${
+                filterLevel === "ALL" ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-950" : "text-neutral-500"
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setFilterLevel("WARNING")}
+              className={`px-1.5 py-0.5 rounded-sm ${
+                filterLevel === "WARNING" ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-950" : "text-neutral-500"
+              }`}
+            >
+              Warnings
+            </button>
+          </div>
+        </div>
         <div className="max-h-40 overflow-y-auto space-y-1">
-          {events.length === 0 ? (
-            <div className="text-neutral-400">Connecting to event stream...</div>
+          {filteredLogs.length === 0 ? (
+            <div className="text-neutral-400">Connecting to telemetry stream...</div>
           ) : (
-            events.map((evt, idx) => (
+            filteredLogs.map((evt, idx) => (
               <div key={idx} className="text-neutral-700 dark:text-neutral-300">
                 &gt; {evt}
               </div>
@@ -176,7 +216,7 @@ export function RunPage() {
               return (
                 <div
                   key={p.id}
-                  className="p-4 border border-neutral-200 dark:border-neutral-800 rounded-sm bg-white dark:bg-neutral-900 flex flex-col justify-between"
+                  className="p-5 border border-neutral-200 dark:border-neutral-800 rounded-sm bg-white dark:bg-neutral-900 flex flex-col justify-between"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
@@ -234,8 +274,9 @@ export function RunPage() {
       )}
 
       {isCompleted && products.length === 0 && (
-        <div className="p-8 border border-neutral-200 dark:border-neutral-800 rounded-sm text-center text-xs text-neutral-500">
-          No candidates met the minimum criteria or all candidates were disqualified based on brand reliability.
+        <div className="p-8 border border-neutral-200 dark:border-neutral-800 rounded-sm text-center text-xs text-neutral-500 flex flex-col items-center gap-2">
+          <AlertCircle className="w-5 h-5 text-neutral-400" />
+          <span>No candidates met the minimum criteria or all candidates were disqualified based on brand reliability.</span>
         </div>
       )}
     </div>
