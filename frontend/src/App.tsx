@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Moon, Sun, Search, History, Bookmark, CheckCircle, Sliders } from "lucide-react";
+import { SearchPage } from "./pages/SearchPage";
+import { RunPage } from "./pages/RunPage";
 
 function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
@@ -29,27 +31,6 @@ function ThemeToggle() {
     >
       {isDark ? <Sun className="w-4 h-4 text-neutral-300" /> : <Moon className="w-4 h-4 text-neutral-700" />}
     </button>
-  );
-}
-
-function HomePage() {
-  return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4 mb-6">
-        <h1 className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
-          Product Research and Verification
-        </h1>
-        <p className="text-sm text-neutral-500 mt-1">
-          Autonomous evidence-backed product shortlists with cross-verified specifications and seller pricing.
-        </p>
-      </div>
-      <div className="border border-neutral-200 dark:border-neutral-800 p-6 rounded-sm bg-neutral-50 dark:bg-neutral-900/50">
-        <p className="text-xs font-mono uppercase tracking-wider text-neutral-500">System Ready</p>
-        <p className="text-sm text-neutral-700 dark:text-neutral-300 mt-2">
-          Cart Detective initialized. Proceed to Search to submit buying requirements.
-        </p>
-      </div>
-    </div>
   );
 }
 
@@ -89,7 +70,8 @@ export function App() {
         </header>
         <main className="flex-1">
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<SearchPage />} />
+            <Route path="/runs/:runId" element={<RunPage />} />
             <Route path="/history" element={<div className="p-6 max-w-4xl mx-auto"><h2 className="text-lg font-medium">History</h2></div>} />
             <Route path="/wishlist" element={<div className="p-6 max-w-4xl mx-auto"><h2 className="text-lg font-medium">Wishlist</h2></div>} />
             <Route path="/bought" element={<div className="p-6 max-w-4xl mx-auto"><h2 className="text-lg font-medium">Bought</h2></div>} />

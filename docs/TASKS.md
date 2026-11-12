@@ -61,11 +61,11 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 - [x] Acceptance Criteria: Unit tests verify mathematical consistency of scores and weight overrides.
 
 ### Phase 6: API Layer, SSE Progress, and Thin End-to-End Slice
-- [ ] Branch: `phase/6-api-sse`
-- [ ] Implement FastAPI endpoints for searches, runs, products, wishlist, purchases, and settings.
-- [ ] Implement Server-Sent Events (`/api/runs/{id}/stream`) for real-time stage progress and logs.
-- [ ] Wire up thin end-to-end slice connecting mock fixture pipeline to API and minimal frontend verification.
-- [ ] Acceptance Criteria: SSE stream emits stage progress from start to completion; frontend receives and renders live updates.
+- [x] Branch: `phase/6-api-sse`
+- [x] Implement FastAPI endpoints for searches, runs, products, wishlist, purchases, and settings.
+- [x] Implement Server-Sent Events (`/api/runs/{id}/stream`) for real-time stage progress and logs.
+- [x] Wire up thin end-to-end slice connecting mock fixture pipeline to API and minimal frontend verification.
+- [x] Acceptance Criteria: SSE stream emits stage progress from start to completion; frontend receives and renders live updates.
 
 ### Phase 7: Frontend Core, Design System, Search, and Live Run
 - [ ] Branch: `phase/7-frontend-search`

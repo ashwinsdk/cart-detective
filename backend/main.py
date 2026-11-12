@@ -5,14 +5,16 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from backend.api.router import router as api_router
 from backend.config import settings
+from backend.database import init_db
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup tasks
+    # Initialize database tables
+    await init_db()
     yield
-    # Shutdown tasks
 
 
 app = FastAPI(
@@ -29,6 +31,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(api_router)
 
 
 @app.get("/api/health")

@@ -1,0 +1,1 @@
+"""FastAPI REST router package."""
