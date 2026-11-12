@@ -20,7 +20,7 @@ export function SettingsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getSettings()
+    getSettings<{ scoring_weights?: Record<string, number>; provider_status?: Record<string, unknown> }>()
       .then((data) => {
         if (data.scoring_weights) setWeights(data.scoring_weights);
         if (data.provider_status) setProviderStatus(data.provider_status);

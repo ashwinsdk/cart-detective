@@ -63,12 +63,12 @@ export function RunPage() {
   useEffect(() => {
     if (!runId) return;
 
-    getRun(runId)
+    getRun<RunData>(runId)
       .then((data) => {
         setRun(data);
         if (data.status === "completed") {
           setIsCompleted(true);
-          getRunProducts(runId).then(setProducts);
+          getRunProducts<ProductItem[]>(runId).then(setProducts);
         }
       })
       .catch((err) => {
@@ -93,7 +93,7 @@ export function RunPage() {
     eventSource.addEventListener("complete", (_e) => {
       setIsCompleted(true);
       eventSource.close();
-      getRunProducts(runId).then(setProducts);
+      getRunProducts<ProductItem[]>(runId).then(setProducts);
     });
 
     eventSource.addEventListener("error", (e: Event) => {

@@ -26,7 +26,7 @@ export function BoughtPage() {
   const [notes, setNotes] = useState("");
 
   const loadData = () => {
-    listPurchases()
+    listPurchases<PurchaseEntry[]>()
       .then(setPurchases)
       .finally(() => setLoading(false));
   };

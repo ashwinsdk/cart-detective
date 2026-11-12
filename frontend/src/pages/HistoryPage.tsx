@@ -25,7 +25,7 @@ export function HistoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    listSearches()
+    listSearches<SearchRecord[]>()
       .then(setSearches)
       .finally(() => setLoading(false));
   }, []);

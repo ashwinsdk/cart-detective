@@ -6,6 +6,12 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+### Fixed
+- Configured Vite development and preview proxy for `/api` routes pointing to FastAPI port 8000, resolving Failed to create search: Not Found error.
+- Configured root environment directory resolution in Vite (`envDir: "../"`).
+- Enhanced API client error parsing to extract FastAPI `detail` messages.
+- Updated `make setup` to automatically initialize `.env` from `.env.example`.
+
 ### Added
 - Repository initialization with Stage 1 starter files.
 - Agent operational rules and compliance tooling.

@@ -19,6 +19,7 @@ help:
 	@echo "  check-secrets     Scan for committed credentials"
 
 setup:
+	test -f .env || cp .env.example .env
 	uv venv --python 3.12
 	uv pip install -e ".[dev]"
 	cd frontend && npm install

@@ -22,7 +22,7 @@ export function WishlistPage() {
   const [loading, setLoading] = useState(true);
 
   const loadData = () => {
-    getWishlist()
+    getWishlist<WishlistEntry[]>()
       .then(setItems)
       .finally(() => setLoading(false));
   };

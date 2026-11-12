@@ -1,5 +1,21 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
 
+async function handleResponse<T>(res: Response, fallbackMessage: string): Promise<T> {
+  if (!res.ok) {
+    let detail = res.statusText || `Status ${res.status}`;
+    try {
+      const data = await res.json();
+      if (data && data.detail) {
+        detail = typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail);
+      }
+    } catch {
+      // Fallback to HTTP status text
+    }
+    throw new Error(`${fallbackMessage}: ${detail}`);
+  }
+  return res.json() as Promise<T>;
+}
+
 export interface SearchPayload {
   product_type: string;
   budget_min?: number | null;
@@ -20,108 +36,78 @@ export async function createSearch(payload: SearchPayload) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) {
-    throw new Error(`Failed to create search: ${res.statusText}`);
-  }
-  return res.json();
+  return handleResponse<{ search_id: string; run_id: string; status: string; created_at: string }>(
+    res,
+    "Failed to create search"
+  );
 }
 
-export async function listSearches(limit = 20, offset = 0) {
+export async function listSearches<T = unknown[]>(limit = 20, offset = 0): Promise<T> {
   const res = await fetch(`${API_BASE}/api/searches?limit=${limit}&offset=${offset}`);
-  if (!res.ok) {
-    throw new Error(`Failed to list searches: ${res.statusText}`);
-  }
-  return res.json();
+  return handleResponse<T>(res, "Failed to list searches");
 }
 
-export async function getRun(runId: string) {
+export async function getRun<T = unknown>(runId: string): Promise<T> {
   const res = await fetch(`${API_BASE}/api/runs/${runId}`);
-  if (!res.ok) {
-    throw new Error(`Failed to fetch run: ${res.statusText}`);
-  }
-  return res.json();
+  return handleResponse<T>(res, "Failed to fetch run");
 }
 
-export async function getRunProducts(runId: string) {
+export async function getRunProducts<T = unknown[]>(runId: string): Promise<T> {
   const res = await fetch(`${API_BASE}/api/runs/${runId}/products`);
-  if (!res.ok) {
-    throw new Error(`Failed to fetch products: ${res.statusText}`);
-  }
-  return res.json();
+  return handleResponse<T>(res, "Failed to fetch products");
 }
 
-export async function getWishlist() {
+export async function getWishlist<T = unknown[]>(): Promise<T> {
   const res = await fetch(`${API_BASE}/api/wishlist`);
-  if (!res.ok) {
-    throw new Error(`Failed to fetch wishlist: ${res.statusText}`);
-  }
-  return res.json();
+  return handleResponse<T>(res, "Failed to fetch wishlist");
 }
 
-export async function addToWishlist(productId: string, notes?: string) {
+export async function addToWishlist<T = { id: string; status: string }>(productId: string, notes?: string): Promise<T> {
   const res = await fetch(`${API_BASE}/api/wishlist`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ product_id: productId, notes }),
   });
-  if (!res.ok) {
-    throw new Error(`Failed to add to wishlist: ${res.statusText}`);
-  }
-  return res.json();
+  return handleResponse<T>(res, "Failed to add to wishlist");
 }
 
-export async function removeFromWishlist(itemId: string) {
+export async function removeFromWishlist<T = { status: string }>(itemId: string): Promise<T> {
   const res = await fetch(`${API_BASE}/api/wishlist/${itemId}`, {
     method: "DELETE",
   });
-  if (!res.ok) {
-    throw new Error(`Failed to remove from wishlist: ${res.statusText}`);
-  }
-  return res.json();
+  return handleResponse<T>(res, "Failed to remove from wishlist");
 }
 
-export async function listPurchases() {
+export async function listPurchases<T = unknown[]>(): Promise<T> {
   const res = await fetch(`${API_BASE}/api/purchases`);
-  if (!res.ok) {
-    throw new Error(`Failed to list purchases: ${res.statusText}`);
-  }
-  return res.json();
+  return handleResponse<T>(res, "Failed to list purchases");
 }
 
-export async function recordPurchase(payload: {
+export async function recordPurchase<T = { id: string; status: string }>(payload: {
   product_id: string;
   price_paid: number;
   currency?: string;
   store?: string;
   notes?: string;
-}) {
+}): Promise<T> {
   const res = await fetch(`${API_BASE}/api/purchases`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) {
-    throw new Error(`Failed to record purchase: ${res.statusText}`);
-  }
-  return res.json();
+  return handleResponse<T>(res, "Failed to record purchase");
 }
 
-export async function getSettings() {
+export async function getSettings<T = { scoring_weights?: Record<string, number>; provider_status?: Record<string, unknown> }>(): Promise<T> {
   const res = await fetch(`${API_BASE}/api/settings`);
-  if (!res.ok) {
-    throw new Error(`Failed to fetch settings: ${res.statusText}`);
-  }
-  return res.json();
+  return handleResponse<T>(res, "Failed to fetch settings");
 }
 
-export async function updateSettings(settingsData: Record<string, unknown>) {
+export async function updateSettings<T = { status: string }>(settingsData: Record<string, unknown>): Promise<T> {
   const res = await fetch(`${API_BASE}/api/settings`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ settings: settingsData }),
   });
-  if (!res.ok) {
-    throw new Error(`Failed to update settings: ${res.statusText}`);
-  }
-  return res.json();
+  return handleResponse<T>(res, "Failed to update settings");
 }
