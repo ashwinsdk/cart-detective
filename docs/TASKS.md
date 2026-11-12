@@ -40,11 +40,11 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 - [x] Acceptance Criteria: Fetcher respects rate limits and cache TTL; LLM interface parses test prompts cleanly.
 
 ### Phase 3: Pipeline Stages 1 to 3
-- [ ] Branch: `phase/3-pipeline-early`
-- [ ] Stage 1 (Understand): Convert raw query input to `StructuredQuerySpec` using LLM with heuristic fallback.
-- [ ] Stage 2 (Discover Candidates): Query SearXNG, DuckDuckGo, and Brave Search; deduplicate by canonical brand and model.
-- [ ] Stage 3 (Brand Research): Scrape warranty, forum reputation, and support footprint; filter disqualified brands.
-- [ ] Acceptance Criteria: Pipeline executes stages 1 to 3, emitting candidates with brand reputation metrics.
+- [x] Branch: `phase/3-pipeline-early`
+- [x] Stage 1 (Understand): Convert raw query input to `StructuredQuerySpec` using LLM with heuristic fallback.
+- [x] Stage 2 (Discover Candidates): Query SearXNG, DuckDuckGo, and Brave Search; deduplicate by canonical brand and model.
+- [x] Stage 3 (Brand Research): Scrape warranty, forum reputation, and support footprint; filter disqualified brands.
+- [x] Acceptance Criteria: Pipeline executes stages 1 to 3, emitting candidates with brand reputation metrics.
 
 ### Phase 4: Pipeline Stages 4 to 6
 - [ ] Branch: `phase/4-pipeline-core`
