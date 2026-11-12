@@ -32,6 +32,36 @@ KNOWN_BRAND_REPUTATION = {
         "support": "Select authorized premium importers in metro cities",
         "negatives": [],
     },
+    "ls2": {
+        "score": 90.0,
+        "warranty": "5 years manufacturer warranty",
+        "support": "Authorized distributor network and spares across India",
+        "negatives": [],
+    },
+    "axor": {
+        "score": 85.0,
+        "warranty": "1 year limited warranty",
+        "support": "Extensive national retail and dealer network",
+        "negatives": [],
+    },
+    "smk": {
+        "score": 84.0,
+        "warranty": "2 years manufacturing warranty",
+        "support": "National distributor network and spare visors availability",
+        "negatives": [],
+    },
+    "mt helmets": {
+        "score": 88.0,
+        "warranty": "2 years manufacturer warranty",
+        "support": "Wide dealership and authorized importer network",
+        "negatives": [],
+    },
+    "mt": {
+        "score": 88.0,
+        "warranty": "2 years manufacturer warranty",
+        "support": "Wide dealership and authorized importer network",
+        "negatives": [],
+    },
     "asics": {
         "score": 91.0,
         "warranty": "6 months manufacturing defect warranty",

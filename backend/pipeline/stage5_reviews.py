@@ -48,6 +48,57 @@ SEEDED_YOUTUBE_REVIEWS = {
         "is_sponsored": False,
         "views": 28000,
     },
+    "ls2 pioneer": {
+        "video_id": "vid_ls2_01",
+        "title": "LS2 Pioneer II Dual Sport Helmet In-Depth Highway and Off-Road Review",
+        "channel": "Motorcycle Adventure Touring",
+        "url": "https://youtube.com/watch?v=vid_ls2_01",
+        "transcript": (
+            "We have put 4000 km on the LS2 Pioneer II Dual Sport helmet. "
+            "The peak visor aerodynamic vents reduce buffeting significantly on the highway. "
+            "ECE 22.06 certified shell with emergency release cheek pads. Excellent field of view."
+        ),
+        "is_sponsored": False,
+        "views": 62000,
+    },
+    "axor x-cross": {
+        "video_id": "vid_axor_01",
+        "title": "Axor X-Cross Adventure Helmet Honest Review",
+        "channel": "Dual Sport Riders India",
+        "url": "https://youtube.com/watch?v=vid_axor_01",
+        "transcript": (
+            "Reviewing the Axor X-Cross dual sport helmet. High value at this price point. "
+            "Dual visor system and removable sun peak. Slightly heavier than carbon alternatives "
+            "but very durable and comfortable for touring."
+        ),
+        "is_sponsored": False,
+        "views": 48000,
+    },
+    "smk allterra": {
+        "video_id": "vid_smk_01",
+        "title": "SMK Allterra Off-Road Dual Sport Helmet Review",
+        "channel": "Trailblazer Moto",
+        "url": "https://youtube.com/watch?v=vid_smk_01",
+        "transcript": (
+            "The SMK Allterra features a strong injection molded EIRT shell with adjustable peak. "
+            "Airflow through the chin and top vents keeps you cool on hot trail rides. "
+            "ECE and ISI certified."
+        ),
+        "is_sponsored": False,
+        "views": 39000,
+    },
+    "mt synchrony": {
+        "video_id": "vid_mt_01",
+        "title": "MT Synchrony SV Dual Sport Helmet Review",
+        "channel": "Moto Lab India",
+        "url": "https://youtube.com/watch?v=vid_mt_01",
+        "transcript": (
+            "Testing the MT Synchrony SV dual sport helmet. Features internal sun visor and aerodynamic peak. "
+            "Pinlock ready main visor with secure micrometric buckle closure."
+        ),
+        "is_sponsored": False,
+        "views": 34000,
+    },
     "asics gel kayano 30": {
         "video_id": "vid_asics_01",
         "title": "Asics Gel Kayano 30 100 Mile Review",

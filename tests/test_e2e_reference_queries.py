@@ -142,3 +142,50 @@ async def test_reference_query_3_laptop_backpack():
         valex = next((p for p in products if "Valex" in p["title"]), None)
         assert valex is not None
         assert valex["offers"][0]["price"] <= 3000.0
+
+
+@pytest.mark.asyncio
+async def test_user_query_adventure_helment():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        res = await client.post(
+            "/api/searches",
+            json={
+                "product_type": "adventure helment",
+                "budget_min": 5000,
+                "budget_max": 12000,
+                "currency": "INR",
+                "color_preferences": ["black"],
+                "size_preference": "M or L",
+                "must_haves": "peak",
+                "brands_included": ["ls2", "axor", "smk"],
+            },
+        )
+        assert res.status_code == 201
+        run_id = res.json()["run_id"]
+        search_id = res.json()["search_id"]
+
+        await orchestrator.run_pipeline(
+            search_id=search_id,
+            run_id=run_id,
+            raw_query={
+                "product_type": "adventure helment",
+                "budget_min": 5000,
+                "budget_max": 12000,
+                "currency": "INR",
+                "color_preferences": ["black"],
+                "size_preference": "M or L",
+                "must_haves": "peak",
+                "brands_included": ["ls2", "axor", "smk"],
+            },
+        )
+
+        res_prods = await client.get(f"/api/runs/{run_id}/products")
+        assert res_prods.status_code == 200
+        products = res_prods.json()
+
+        assert len(products) >= 3
+        brands = [p["canonical_brand"].lower() for p in products]
+        assert any("ls2" in b for b in brands)
+        assert any("axor" in b for b in brands)
+        assert any("smk" in b for b in brands)

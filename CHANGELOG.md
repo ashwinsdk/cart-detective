@@ -7,6 +7,14 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 ## [Unreleased]
 
 ### Fixed
+- Fixed candidate discovery terminating with zero products when categories had typos or when user specified brands outside the default registry.
+- Added query typo correction in `HeuristicProvider` (for example, normalizing `helment` to `helmet`, `jaket` to `jacket`, `shooes` to `shoes`).
+- Added motorcycle helmet and adventure helmet specifications, certifications (ECE 22.06, DOT, ISI), and mandatory features (peak visor, impact shell).
+- Expanded curated candidate registry to include dual sport and adventure helmets from LS2, Axor, SMK, and MT Helmets.
+- Added brand reputation profiles for LS2, Axor, SMK, and MT Helmets to prevent false-positive brand disqualification.
+- Added seeded YouTube video review benchmarks for LS2 Pioneer II, Axor X-Cross, SMK Allterra, and MT Synchrony SV.
+- Added dynamic brand candidate synthesis when users specify brands not present in seed registry.
+- Integrated `ddgs` as an automated live web search fallback when SearXNG is unavailable.
 - Fixed GitHub CI module resolution errors by unignoring `frontend/src/lib/` in `.gitignore` and tracking `utils.ts` and `export.ts`.
 - Configured Vite development and preview proxy for `/api` routes pointing to FastAPI port 8000, resolving Failed to create search: Not Found error.
 - Configured root environment directory resolution in Vite (`envDir: "../"`).

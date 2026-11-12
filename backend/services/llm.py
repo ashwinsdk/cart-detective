@@ -55,6 +55,22 @@ class HeuristicProvider(BaseLLMProvider):
 
     async def parse_query_spec(self, raw_input: dict[str, Any]) -> StructuredQuerySpec:
         product_type = str(raw_input.get("product_type", "")).strip() or "general product"
+        # Typo correction and normalization for common search terms
+        typo_map = {
+            r"\bhelment[s]?\b": "helmet",
+            r"\bhelmt[s]?\b": "helmet",
+            r"\bjaket[s]?\b": "jacket",
+            r"\bjackt[s]?\b": "jacket",
+            r"\bshooes\b": "shoes",
+            r"\bshos\b": "shoes",
+            r"\bbackpak[s]?\b": "backpack",
+            r"\bbakpack[s]?\b": "backpack",
+            r"\bhedphone[s]?\b": "headphones",
+            r"\bheadfone[s]?\b": "headphones",
+        }
+        for pattern, replacement in typo_map.items():
+            product_type = re.sub(pattern, replacement, product_type, flags=re.IGNORECASE)
+
         currency = str(raw_input.get("currency", "INR")).upper()
 
         b_min = raw_input.get("budget_min")
@@ -87,7 +103,15 @@ class HeuristicProvider(BaseLLMProvider):
 
         # Category heuristics
         p_lower = product_type.lower()
-        if "riding jacket" in p_lower or "motorcycle" in p_lower:
+        if "riding jacket" in p_lower:
+            standards.extend(["CE Level 2", "CE Level 1"])
+            mandatory_specs.extend(["Elbow armor", "Shoulder armor"])
+        elif "helmet" in p_lower or "helm" in p_lower:
+            standards.extend(["ECE 22.06", "DOT", "ISI"])
+            mandatory_specs.extend(["Impact protection shell", "Visor"])
+            if "adventure" in p_lower or "off-road" in p_lower or "dual sport" in p_lower:
+                mandatory_specs.append("Peak visor")
+        elif "motorcycle" in p_lower or "riding" in p_lower:
             standards.extend(["CE Level 2", "CE Level 1"])
             mandatory_specs.extend(["Elbow armor", "Shoulder armor"])
         elif "running shoe" in p_lower:
@@ -109,7 +133,9 @@ class HeuristicProvider(BaseLLMProvider):
 
         brands_included: list[str] = list(user_brands)
         if not brands_included:
-            if any(k in p_lower for k in ["riding", "motorcycle"]):
+            if any(k in p_lower for k in ["helmet", "helm"]):
+                brands_included = ["LS2", "Axor", "SMK", "MT Helmets"]
+            elif any(k in p_lower for k in ["riding", "motorcycle"]):
                 brands_included = ["Rynox", "Royal Enfield", "Viaterra", "Alpinestars"]
             elif any(k in p_lower for k in ["running", "shoe", "sneaker"]):
                 brands_included = ["Asics", "Nike", "Puma", "Adidas"]
