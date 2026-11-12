@@ -56,6 +56,8 @@ class PipelineContext:
     raw_query: dict[str, Any]
     spec: StructuredQuerySpec | None = None
     candidates: list[DiscoveredCandidate] = field(default_factory=list)
+    comparison_table: list[dict[str, Any]] = field(default_factory=list)
+    decision_rationale: str = ""
     telemetry: PipelineTelemetry = field(default_factory=PipelineTelemetry)
     logs: list[dict[str, Any]] = field(default_factory=list)
 

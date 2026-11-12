@@ -12,6 +12,7 @@ from backend.pipeline.stage3_brand import BrandResearchStage
 from backend.pipeline.stage4_scrape import ScrapeStage
 from backend.pipeline.stage5_reviews import ReviewMiningStage
 from backend.pipeline.stage6_verify import VerificationStage
+from backend.pipeline.stage7_score import ScoringStage
 
 __all__ = [
     "BrandResearchStage",
@@ -22,6 +23,7 @@ __all__ = [
     "PipelineTelemetry",
     "ReviewMiningStage",
     "ScrapeStage",
+    "ScoringStage",
     "UnderstandStage",
     "VerificationStage",
 ]

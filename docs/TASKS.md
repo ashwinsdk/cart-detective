@@ -54,11 +54,11 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 - [x] Acceptance Criteria: Structured specs extracted and validated; verified source URLs assigned to all claims.
 
 ### Phase 5: Scoring Engine and Explanations
-- [ ] Branch: `phase/5-scoring`
-- [ ] Implement transparent weighted scoring algorithm (budget fit, spec match, review sentiment, brand reliability, YouTube consensus, stock trust).
-- [ ] Compute evidence confidence score based on source quantity, consensus, and completeness.
-- [ ] Generate objective decision explanations and side-by-side comparison matrix.
-- [ ] Acceptance Criteria: Unit tests verify mathematical consistency of scores and weight overrides.
+- [x] Branch: `phase/5-scoring`
+- [x] Implement transparent weighted scoring algorithm (budget fit, spec match, review sentiment, brand reliability, YouTube consensus, stock trust).
+- [x] Compute evidence confidence score based on source quantity, consensus, and completeness.
+- [x] Generate objective decision explanations and side-by-side comparison matrix.
+- [x] Acceptance Criteria: Unit tests verify mathematical consistency of scores and weight overrides.
 
 ### Phase 6: API Layer, SSE Progress, and Thin End-to-End Slice
 - [ ] Branch: `phase/6-api-sse`
