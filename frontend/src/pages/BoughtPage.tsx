@@ -105,8 +105,9 @@ export function BoughtPage() {
           <h3 className="text-sm font-semibold">Record Manual Purchase</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-mono text-neutral-500 mb-1">Product Title *</label>
+              <label htmlFor="input-bought-title" className="block text-xs font-mono text-neutral-500 mb-1">Product Title *</label>
               <Input
+                id="input-bought-title"
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -114,8 +115,9 @@ export function BoughtPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-mono text-neutral-500 mb-1">Price Paid (INR) *</label>
+              <label htmlFor="input-bought-price" className="block text-xs font-mono text-neutral-500 mb-1">Price Paid (INR) *</label>
               <Input
+                id="input-bought-price"
                 required
                 type="number"
                 value={price}
@@ -124,8 +126,9 @@ export function BoughtPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-mono text-neutral-500 mb-1">Store / Retailer</label>
+              <label htmlFor="input-bought-store" className="block text-xs font-mono text-neutral-500 mb-1">Store / Retailer</label>
               <Input
+                id="input-bought-store"
                 value={store}
                 onChange={(e) => setStore(e.target.value)}
                 placeholder="e.g. Amazon.in"
@@ -133,8 +136,9 @@ export function BoughtPage() {
             </div>
           </div>
           <div>
-            <label className="block text-xs font-mono text-neutral-500 mb-1">Notes</label>
+            <label htmlFor="input-bought-notes" className="block text-xs font-mono text-neutral-500 mb-1">Notes</label>
             <Input
+              id="input-bought-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="e.g. Ordered with CE Level 2 back protector"

@@ -52,7 +52,11 @@ export function HistoryPage() {
       </div>
 
       <div className="flex items-center gap-3">
+        <label htmlFor="input-filter-history" className="sr-only">
+          Filter past investigations
+        </label>
         <Input
+          id="input-filter-history"
           type="text"
           placeholder="Filter by query..."
           value={filter}

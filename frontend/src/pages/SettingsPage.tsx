@@ -135,15 +135,19 @@ export function SettingsPage() {
           {Object.entries(weights).map(([key, val]) => (
             <div key={key} className="space-y-1.5">
               <div className="flex justify-between text-xs font-mono">
-                <span className="capitalize">{key.replace(/_/g, " ")}</span>
+                <label htmlFor={`slider-${key}`} className="capitalize cursor-pointer">
+                  {key.replace(/_/g, " ")}
+                </label>
                 <span>{Math.round(val * 100)}%</span>
               </div>
               <input
+                id={`slider-${key}`}
                 type="range"
                 min="0"
                 max="1"
                 step="0.05"
                 value={val}
+                aria-label={`${key.replace(/_/g, " ")} weight`}
                 onChange={(e) => handleSliderChange(key, parseFloat(e.target.value))}
                 className="w-full accent-neutral-900 dark:accent-neutral-100 cursor-pointer"
               />

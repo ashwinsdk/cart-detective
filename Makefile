@@ -41,6 +41,9 @@ test-backend:
 test-frontend:
 	cd frontend && npm run test
 
+test-e2e:
+	cd frontend && npm run test:e2e
+
 lint: lint-backend lint-frontend check-compliance check-secrets
 
 lint-backend:

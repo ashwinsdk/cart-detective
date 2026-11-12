@@ -68,10 +68,11 @@ export function SearchPage() {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
+          <label htmlFor="input-product-type" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
             Product Category / Query *
           </label>
           <input
+            id="input-product-type"
             type="text"
             required
             value={productType}
@@ -83,10 +84,11 @@ export function SearchPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
+            <label htmlFor="input-budget-min" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
               Min Budget
             </label>
             <input
+              id="input-budget-min"
               type="number"
               value={budgetMin}
               onChange={(e) => setBudgetMin(e.target.value)}
@@ -94,10 +96,11 @@ export function SearchPage() {
             />
           </div>
           <div>
-            <label className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
+            <label htmlFor="input-budget-max" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
               Max Budget
             </label>
             <input
+              id="input-budget-max"
               type="number"
               value={budgetMax}
               onChange={(e) => setBudgetMax(e.target.value)}
@@ -105,10 +108,12 @@ export function SearchPage() {
             />
           </div>
           <div>
-            <label className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
+            <label htmlFor="select-currency" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
               Currency
             </label>
             <select
+              id="select-currency"
+              aria-label="Currency"
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
               className="w-full text-sm p-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-sm focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-100 font-mono"
@@ -123,10 +128,11 @@ export function SearchPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
+            <label htmlFor="input-colors" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
               Color Preferences
             </label>
             <input
+              id="input-colors"
               type="text"
               value={colors}
               onChange={(e) => setColors(e.target.value)}
@@ -135,10 +141,11 @@ export function SearchPage() {
             />
           </div>
           <div>
-            <label className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
+            <label htmlFor="input-size-fit" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
               Size / Fit / Gender
             </label>
             <input
+              id="input-size-fit"
               type="text"
               value={sizeFitGender}
               onChange={(e) => setSizeFitGender(e.target.value)}
@@ -149,10 +156,11 @@ export function SearchPage() {
         </div>
 
         <div>
-          <label className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
+          <label htmlFor="input-must-haves" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
             Must-Have Features
           </label>
           <input
+            id="input-must-haves"
             type="text"
             value={mustHaves}
             onChange={(e) => setMustHaves(e.target.value)}
@@ -162,10 +170,11 @@ export function SearchPage() {
         </div>
 
         <div>
-          <label className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
+          <label htmlFor="input-deal-breakers" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
             Deal Breakers
           </label>
           <input
+            id="input-deal-breakers"
             type="text"
             value={dealBreakers}
             onChange={(e) => setDealBreakers(e.target.value)}
@@ -176,10 +185,11 @@ export function SearchPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
+            <label htmlFor="input-brands-included" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
               Brands to Prioritize
             </label>
             <input
+              id="input-brands-included"
               type="text"
               value={brandsIncluded}
               onChange={(e) => setBrandsIncluded(e.target.value)}
@@ -188,10 +198,11 @@ export function SearchPage() {
             />
           </div>
           <div>
-            <label className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
+            <label htmlFor="input-brands-excluded" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
               Brands to Exclude
             </label>
             <input
+              id="input-brands-excluded"
               type="text"
               value={brandsExcluded}
               onChange={(e) => setBrandsExcluded(e.target.value)}
@@ -202,10 +213,11 @@ export function SearchPage() {
         </div>
 
         <div>
-          <label className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
+          <label htmlFor="input-marketplaces" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
             Target Marketplaces and Stores
           </label>
           <input
+            id="input-marketplaces"
             type="text"
             value={marketplaces}
             onChange={(e) => setMarketplaces(e.target.value)}

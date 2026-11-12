@@ -93,10 +93,10 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 - [x] Acceptance Criteria: All 3 reference queries return verified, sourced shortlists in degraded or online mode.
 
 ### Phase 10: Hardening, Accessibility, and Release
-- [ ] Branch: `phase/10-hardening`
-- [ ] Audit all empty states, loading skeletons, and error screens.
-- [ ] Execute automated accessibility check (axe-core) for WCAG AA compliance.
-- [ ] Execute Playwright browser smoke test and Vitest component test suite.
-- [ ] Verify clean setup under 10 minutes on fresh clone.
+- [x] Branch: `phase/10-hardening`
+- [x] Audit all empty states, loading skeletons, and error screens.
+- [x] Execute automated accessibility check (axe-core) for WCAG AA compliance.
+- [x] Execute Playwright browser smoke test and Vitest component test suite.
+- [x] Verify clean setup under 10 minutes on fresh clone.
 - [ ] Tag release `v0.1.0`.
 - [ ] Acceptance Criteria: 100% passing tests, green CI on all branches, zero compliance violations.
