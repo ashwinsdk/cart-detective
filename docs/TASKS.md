@@ -32,12 +32,12 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 - [x] Acceptance Criteria: Database migrations run, CRUD integration tests pass without errors.
 
 ### Phase 2: Shared Fetch Layer and LLM Provider Interface
-- [ ] Branch: `phase/2-fetch-llm`
-- [ ] Build shared HTTP fetcher with token-bucket rate limiter, RFC 7234 disk cache, robots.txt validator, and backoff logic.
-- [ ] Implement pluggable LLM provider interface (`BaseLLMProvider`) with Groq, Gemini, Ollama, and Heuristic fallback.
-- [ ] Ensure LLM model names are configurable via environment variables and not hardcoded.
-- [ ] Unit tests with recorded mock HTTP responses and fixture payloads.
-- [ ] Acceptance Criteria: Fetcher respects rate limits and cache TTL; LLM interface parses test prompts cleanly.
+- [x] Branch: `phase/2-fetch-llm`
+- [x] Build shared HTTP fetcher with token-bucket rate limiter, RFC 7234 disk cache, robots.txt validator, and backoff logic.
+- [x] Implement pluggable LLM provider interface (`BaseLLMProvider`) with Groq, Gemini, Ollama, and Heuristic fallback.
+- [x] Ensure LLM model names are configurable via environment variables and not hardcoded.
+- [x] Unit tests with recorded mock HTTP responses and fixture payloads.
+- [x] Acceptance Criteria: Fetcher respects rate limits and cache TTL; LLM interface parses test prompts cleanly.
 
 ### Phase 3: Pipeline Stages 1 to 3
 - [ ] Branch: `phase/3-pipeline-early`
