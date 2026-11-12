@@ -171,18 +171,18 @@ export function RunPage() {
   });
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-8">
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto space-y-6 sm:space-y-8">
       {/* Run Header */}
-      <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4 flex items-center justify-between">
+      <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <div className="text-xs font-mono uppercase tracking-wider text-neutral-500">
             Investigation Run
           </div>
-          <h1 className="text-lg font-mono font-medium text-neutral-900 dark:text-neutral-100 mt-0.5">
+          <h1 className="text-base sm:text-lg font-mono font-medium text-neutral-900 dark:text-neutral-100 mt-0.5 break-all">
             {runId}
           </h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center flex-wrap gap-2">
           {isCompleted && products.length > 0 && (
             <>
               <Button onClick={handleExportCSV} variant="outline" size="sm">
@@ -369,9 +369,9 @@ export function RunPage() {
               return (
                 <div
                   key={p.id}
-                  className="p-5 border border-neutral-200 dark:border-neutral-800 rounded-sm bg-white dark:bg-neutral-900 flex flex-col justify-between space-y-4"
+                  className="p-4 sm:p-5 border border-neutral-200 dark:border-neutral-800 rounded-sm bg-white dark:bg-neutral-900 flex flex-col justify-between space-y-4"
                 >
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-xs font-semibold px-1.5 py-0.5 border border-neutral-300 dark:border-neutral-700 rounded-sm">
@@ -389,33 +389,33 @@ export function RunPage() {
                       </p>
                     </div>
 
-                    <div className="text-right shrink-0">
+                    <div className="text-left sm:text-right shrink-0">
                       <div className="font-mono text-base font-semibold">
                         {bestOffer.price ? `${bestOffer.currency} ${bestOffer.price.toLocaleString()}` : "Price unverified"}
                       </div>
                       <div className="text-xs font-mono text-neutral-500 mt-0.5">
-                        Seller: {bestOffer.seller_name || "Direct"}
+                        Seller: {bestOffer.seller_name || "Direct Webstore"}
                       </div>
-                      <div className="mt-2 text-xs font-mono text-neutral-700 dark:text-neutral-300">
+                      <div className="mt-1 sm:mt-2 text-xs font-mono text-neutral-700 dark:text-neutral-300">
                         Score: {p.score}/100 ({p.confidence}% conf)
                       </div>
                     </div>
                   </div>
 
                   {/* Evidence & Video Summary */}
-                  {p.videos && p.videos.length > 0 && (
+                  {p.videos && p.videos.length > 0 && p.videos[0].transcript_summary && (
                     <div className="p-3 border border-neutral-200 dark:border-neutral-800 rounded-sm bg-neutral-50 dark:bg-neutral-900/50 text-xs">
                       <div className="font-mono text-neutral-500 uppercase tracking-wider text-xs mb-1">
                         Video Review Consensus
                       </div>
                       <p className="text-neutral-700 dark:text-neutral-300">
-                        {p.videos[0].transcript_summary || "Independent review consensus synthesized from reviewer transcript."}
+                        {p.videos[0].transcript_summary}
                       </p>
                     </div>
                   )}
 
                   {/* Actions and Footer */}
-                  <div className="pt-3 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between text-xs font-mono">
+                  <div className="pt-3 border-t border-neutral-100 dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs font-mono">
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
                         <ShieldCheck className="w-3.5 h-3.5" />
@@ -426,7 +426,7 @@ export function RunPage() {
                       )}
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center flex-wrap gap-2">
                       <Button onClick={() => handleSaveWishlist(p.id)} variant="outline" size="sm">
                         <Bookmark className="w-3.5 h-3.5 mr-1" />
                         <span>Wishlist</span>

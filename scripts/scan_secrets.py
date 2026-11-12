@@ -33,6 +33,8 @@ IGNORED_DIRS = {
 }
 
 IGNORED_FILES = {
+    ".env",
+    ".env.local",
     ".env.example",
     "scan_secrets.py",
 }

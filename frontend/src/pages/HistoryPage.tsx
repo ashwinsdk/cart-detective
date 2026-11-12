@@ -14,6 +14,12 @@ interface SearchRecord {
   budget_max?: number | null;
   currency: string;
   color_preferences: string[];
+  size_fit_gender?: string | null;
+  must_haves?: string | null;
+  deal_breakers?: string | null;
+  brands_included?: string[];
+  brands_excluded?: string[];
+  marketplaces?: string[];
   latest_run_id?: string | null;
   latest_status?: string | null;
 }
@@ -30,13 +36,33 @@ export function HistoryPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleReuse = (item: SearchRecord) => {
+    navigate("/", {
+      state: {
+        reuseQuery: {
+          product_type: item.product_type,
+          budget_min: item.budget_min,
+          budget_max: item.budget_max,
+          currency: item.currency,
+          color_preferences: item.color_preferences,
+          size_fit_gender: item.size_fit_gender,
+          must_haves: item.must_haves,
+          deal_breakers: item.deal_breakers,
+          brands_included: item.brands_included,
+          brands_excluded: item.brands_excluded,
+          marketplaces: item.marketplaces,
+        },
+      },
+    });
+  };
+
   const filtered = searches.filter((s) =>
     s.product_type.toLowerCase().includes(filter.toLowerCase())
   );
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
-      <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4 flex items-center justify-between">
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto space-y-6">
+      <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
             Search History
@@ -81,10 +107,10 @@ export function HistoryPage() {
           {filtered.map((item) => (
             <div
               key={item.id}
-              className="p-4 flex items-center justify-between hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors"
+              className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors"
             >
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                     {item.product_type}
                   </span>
@@ -94,7 +120,7 @@ export function HistoryPage() {
                     </Badge>
                   )}
                 </div>
-                <div className="text-xs font-mono text-neutral-500 mt-1 flex items-center gap-3">
+                <div className="text-xs font-mono text-neutral-500 mt-1 flex items-center gap-2 sm:gap-3 flex-wrap">
                   <span>
                     Budget: {item.budget_max ? `Up to ${item.currency} ${item.budget_max.toLocaleString()}` : "Flexible"}
                   </span>
@@ -103,19 +129,18 @@ export function HistoryPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                {item.latest_run_id ? (
+              <div className="flex items-center flex-wrap gap-2 shrink-0">
+                <Button variant="outline" size="sm" onClick={() => handleReuse(item)}>
+                  <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                  <span>Edit and Reuse</span>
+                </Button>
+                {item.latest_run_id && (
                   <Link to={`/runs/${item.latest_run_id}`}>
                     <Button variant="outline" size="sm">
                       <span>View Results</span>
-                      <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                      <ArrowRight className="w-3.5 h-3.5 ml-1" />
                     </Button>
                   </Link>
-                ) : (
-                  <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
-                    <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
-                    <span>Re-run</span>
-                  </Button>
                 )}
               </div>
             </div>

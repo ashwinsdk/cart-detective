@@ -58,6 +58,10 @@ async def test_heuristic_llm_provider():
     assert "black" in spec.color_preferences
     assert any("CE Level 2" in s for s in spec.standards_and_certifications)
     assert "no mesh" in spec.red_flags
+    assert len(spec.brands_included) > 0
+    assert "Rynox" in spec.brands_included
+    assert len(spec.marketplaces) > 0
+    assert "Amazon.in" in spec.marketplaces
 
     # Review extraction
     review_text = (

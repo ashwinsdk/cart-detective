@@ -31,6 +31,16 @@ class UnderstandStage:
                     1,
                     f"Parsed specification for {spec.product_type} with max budget {spec.budget_max} {spec.currency}",
                 )
+                if not ctx.raw_query.get("brands_included") and spec.brands_included:
+                    ctx.log(
+                        1,
+                        f"Auto-discovered authoritative brands for {spec.product_type}: {', '.join(spec.brands_included)}",
+                    )
+                if not ctx.raw_query.get("marketplaces") and spec.marketplaces:
+                    ctx.log(
+                        1,
+                        f"Auto-discovered target marketplaces for {spec.currency}: {', '.join(spec.marketplaces)}",
+                    )
                 break
             except Exception as exc:
                 ctx.telemetry.partial_failures.append(

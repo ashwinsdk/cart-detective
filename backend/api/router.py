@@ -104,6 +104,12 @@ async def list_searches(
             "budget_max": s.budget_max,
             "currency": s.currency,
             "color_preferences": s.color_preferences,
+            "size_fit_gender": s.size_fit_gender,
+            "must_haves": s.must_haves,
+            "deal_breakers": s.deal_breakers,
+            "brands_included": s.brands_included,
+            "brands_excluded": s.brands_excluded,
+            "marketplaces": s.marketplaces,
             "latest_run_id": s.runs[-1].id if s.runs else None,
             "latest_status": s.runs[-1].status if s.runs else None,
         }

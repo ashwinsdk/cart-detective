@@ -50,7 +50,7 @@ export function WishlistPage() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto space-y-6">
       <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4">
         <h1 className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
           Saved Wishlist
@@ -75,19 +75,19 @@ export function WishlistPage() {
             return (
               <div
                 key={item.id}
-                className="p-4 border border-neutral-200 dark:border-neutral-800 rounded-sm bg-white dark:bg-neutral-900 flex items-center justify-between"
+                className="p-4 border border-neutral-200 dark:border-neutral-800 rounded-sm bg-white dark:bg-neutral-900 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
               >
                 <div>
                   <div className="text-xs font-mono uppercase tracking-wider text-neutral-500">
-                    {p?.brand || "Brand"}
+                    {p?.brand || "Unspecified Brand"}
                   </div>
                   <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mt-0.5">
-                    {p?.title || "Product"}
+                    {p?.title || "Unspecified Product"}
                   </h3>
                   {item.notes && (
                     <p className="text-xs text-neutral-500 mt-1">Note: {item.notes}</p>
                   )}
-                  <div className="text-xs font-mono text-neutral-600 dark:text-neutral-400 mt-2 flex items-center gap-3">
+                  <div className="text-xs font-mono text-neutral-600 dark:text-neutral-400 mt-2 flex items-center gap-2 sm:gap-3 flex-wrap">
                     <span>
                       {p?.price ? `${p.currency} ${p.price.toLocaleString()}` : "Price unverified"}
                     </span>
@@ -96,7 +96,7 @@ export function WishlistPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
                   <Button
                     onClick={() => handleMarkBought(item)}
                     size="sm"

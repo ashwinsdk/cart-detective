@@ -1,23 +1,67 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import { Search as SearchIcon, ArrowRight } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Search as SearchIcon, ArrowRight, RotateCcw } from "lucide-react";
 import { createSearch } from "../api/client";
+
+interface ReuseQueryState {
+  product_type?: string;
+  budget_min?: number | null;
+  budget_max?: number | null;
+  currency?: string;
+  color_preferences?: string[];
+  size_fit_gender?: string | null;
+  must_haves?: string | null;
+  deal_breakers?: string | null;
+  brands_included?: string[];
+  brands_excluded?: string[];
+  marketplaces?: string[];
+}
 
 export function SearchPage() {
   const navigate = useNavigate();
-  const [productType, setProductType] = useState("riding jacket");
-  const [budgetMax, setBudgetMax] = useState("12000");
-  const [budgetMin, setBudgetMin] = useState("5000");
-  const [currency, setCurrency] = useState("INR");
-  const [colors, setColors] = useState("black, grey");
-  const [sizeFitGender, setSizeFitGender] = useState("men XL, touring fit");
-  const [mustHaves, setMustHaves] = useState("CE Level 2 armor for elbows and shoulders");
-  const [dealBreakers, setDealBreakers] = useState("no mesh only construction");
-  const [brandsIncluded, setBrandsIncluded] = useState("Rynox, Royal Enfield, Viaterra");
-  const [brandsExcluded, setBrandsExcluded] = useState("");
-  const [marketplaces, setMarketplaces] = useState("Amazon.in, Flipkart, Brand sites");
+  const location = useLocation();
+  const reuseQuery = (location.state as { reuseQuery?: ReuseQueryState } | null)?.reuseQuery;
+
+  const [productType, setProductType] = useState(reuseQuery?.product_type || "");
+  const [budgetMax, setBudgetMax] = useState(
+    reuseQuery?.budget_max != null ? String(reuseQuery.budget_max) : ""
+  );
+  const [budgetMin, setBudgetMin] = useState(
+    reuseQuery?.budget_min != null ? String(reuseQuery.budget_min) : ""
+  );
+  const [currency, setCurrency] = useState(reuseQuery?.currency || "INR");
+  const [colors, setColors] = useState(
+    Array.isArray(reuseQuery?.color_preferences) ? reuseQuery.color_preferences.join(", ") : ""
+  );
+  const [sizeFitGender, setSizeFitGender] = useState(reuseQuery?.size_fit_gender || "");
+  const [mustHaves, setMustHaves] = useState(reuseQuery?.must_haves || "");
+  const [dealBreakers, setDealBreakers] = useState(reuseQuery?.deal_breakers || "");
+  const [brandsIncluded, setBrandsIncluded] = useState(
+    Array.isArray(reuseQuery?.brands_included) ? reuseQuery.brands_included.join(", ") : ""
+  );
+  const [brandsExcluded, setBrandsExcluded] = useState(
+    Array.isArray(reuseQuery?.brands_excluded) ? reuseQuery.brands_excluded.join(", ") : ""
+  );
+  const [marketplaces, setMarketplaces] = useState(
+    Array.isArray(reuseQuery?.marketplaces) ? reuseQuery.marketplaces.join(", ") : ""
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleClearForm = () => {
+    setProductType("");
+    setBudgetMax("");
+    setBudgetMin("");
+    setCurrency("INR");
+    setColors("");
+    setSizeFitGender("");
+    setMustHaves("");
+    setDealBreakers("");
+    setBrandsIncluded("");
+    setBrandsExcluded("");
+    setMarketplaces("");
+    setError(null);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -50,7 +94,7 @@ export function SearchPage() {
   };
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-3xl mx-auto">
       <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4 mb-6">
         <h1 className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
           New Product Investigation
@@ -59,6 +103,22 @@ export function SearchPage() {
           Specify product requirements. The background pipeline crawls listings, analyzes reviews, checks video consensus, and corroborates evidence.
         </p>
       </div>
+
+      {reuseQuery && (
+        <div className="mb-6 p-3 border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 rounded-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2 text-neutral-800 dark:text-neutral-200">
+            <RotateCcw className="w-3.5 h-3.5 shrink-0 text-neutral-600 dark:text-neutral-400" />
+            <span>Editing previous query from history. Submitting creates a new investigation run.</span>
+          </div>
+          <button
+            type="button"
+            onClick={handleClearForm}
+            className="text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 underline text-left sm:text-right"
+          >
+            Clear and start fresh
+          </button>
+        </div>
+      )}
 
       {error && (
         <div className="mb-6 p-3 text-xs border border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 rounded-sm">
@@ -196,6 +256,9 @@ export function SearchPage() {
               placeholder="e.g. Rynox, Viaterra, Royal Enfield"
               className="w-full text-sm p-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-sm focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-100"
             />
+            <span className="block text-2xs text-neutral-500 mt-1">
+              Leave blank to automatically discover authoritative brands.
+            </span>
           </div>
           <div>
             <label htmlFor="input-brands-excluded" className="block text-xs uppercase tracking-wider font-mono text-neutral-600 dark:text-neutral-400 mb-1">
@@ -224,6 +287,9 @@ export function SearchPage() {
             placeholder="e.g. Amazon.in, Flipkart, Brand Webstores"
             className="w-full text-sm p-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-sm focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-100"
           />
+          <span className="block text-2xs text-neutral-500 mt-1">
+            Leave blank to automatically discover leading stores for the selected currency.
+          </span>
         </div>
 
         <div className="pt-2">

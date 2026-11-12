@@ -7,12 +7,18 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 ## [Unreleased]
 
 ### Fixed
+- Fixed GitHub CI module resolution errors by unignoring `frontend/src/lib/` in `.gitignore` and tracking `utils.ts` and `export.ts`.
 - Configured Vite development and preview proxy for `/api` routes pointing to FastAPI port 8000, resolving Failed to create search: Not Found error.
 - Configured root environment directory resolution in Vite (`envDir: "../"`).
 - Enhanced API client error parsing to extract FastAPI `detail` messages.
 - Updated `make setup` to automatically initialize `.env` from `.env.example`.
+- Updated secret scanner to ignore local uncommitted `.env` files.
 
 ### Added
+- Removed default placeholder values from Search form, ensuring clean user-driven inputs and meaningful empty states.
+- Implemented comprehensive mobile, tablet, and desktop responsiveness across header navigation, run telemetry, comparison tables, and list cards.
+- Added edit and reuse capability in search history, creating a new investigation entry without overwriting past searches.
+- Implemented automatic brand and marketplace discovery in query understanding stage when unspecified by user.
 - Repository initialization with Stage 1 starter files.
 - Agent operational rules and compliance tooling.
 - Core technical documentation covering architecture, pipeline, data sources, scraping policy, scoring, data models, API contracts, and UI guidelines.

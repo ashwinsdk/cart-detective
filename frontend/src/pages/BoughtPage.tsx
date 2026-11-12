@@ -58,8 +58,8 @@ export function BoughtPage() {
   const totalSpent = purchases.reduce((acc, curr) => acc + (curr.price_paid || 0), 0);
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
-      <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4 flex items-center justify-between">
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto space-y-6">
+      <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
             Purchased Products
@@ -75,7 +75,7 @@ export function BoughtPage() {
       </div>
 
       {/* Summary Banner */}
-      <div className="border border-neutral-200 dark:border-neutral-800 rounded-sm p-4 bg-neutral-50 dark:bg-neutral-900/50 flex items-center justify-between">
+      <div className="border border-neutral-200 dark:border-neutral-800 rounded-sm p-4 bg-neutral-50 dark:bg-neutral-900/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="p-2 border border-neutral-300 dark:border-neutral-700 rounded-sm bg-white dark:bg-neutral-900">
             <CheckCircle className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
@@ -90,7 +90,7 @@ export function BoughtPage() {
           </div>
         </div>
 
-        <div className="text-right">
+        <div className="text-left sm:text-right">
           <div className="text-xs font-mono uppercase tracking-wider text-neutral-500">
             Total Expenditure
           </div>
@@ -166,20 +166,20 @@ export function BoughtPage() {
       ) : (
         <div className="border border-neutral-200 dark:border-neutral-800 rounded-sm divide-y divide-neutral-200 dark:divide-neutral-800">
           {purchases.map((p) => (
-            <div key={p.id} className="p-4 flex items-center justify-between">
+            <div key={p.id} className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
                 <h4 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                   {p.product_title || "Product Purchase"}
                 </h4>
                 {p.notes && <p className="text-xs text-neutral-500 mt-0.5">{p.notes}</p>}
-                <div className="text-xs font-mono text-neutral-500 mt-1 flex items-center gap-3">
+                <div className="text-xs font-mono text-neutral-500 mt-1 flex items-center gap-2 sm:gap-3 flex-wrap">
                   <span>Store: {p.store || "Direct"}</span>
                   <span>•</span>
                   <span>{new Date(p.purchase_date).toLocaleDateString()}</span>
                 </div>
               </div>
 
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <span className="font-mono text-sm font-semibold">
                   {p.currency} {p.price_paid.toLocaleString()}
                 </span>

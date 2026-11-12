@@ -42,35 +42,35 @@ export function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex flex-col font-sans">
-        <header className="border-b border-neutral-200 dark:border-neutral-800 px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link to="/" className="font-mono text-sm font-semibold tracking-wider uppercase text-neutral-950 dark:text-neutral-50">
-              Cart Detective
-            </Link>
-            <nav className="flex items-center gap-4 text-xs">
-              <Link to="/" className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">
+        <header className="border-b border-neutral-200 dark:border-neutral-800 px-3 sm:px-6 py-3 flex items-center justify-between gap-2 sm:gap-4">
+          <Link to="/" className="font-mono text-sm font-semibold tracking-wider uppercase text-neutral-950 dark:text-neutral-50 shrink-0">
+            Cart Detective
+          </Link>
+          <div className="flex items-center gap-2 sm:gap-6 overflow-x-auto">
+            <nav className="flex items-center gap-2 sm:gap-4 text-xs whitespace-nowrap">
+              <Link to="/" className="flex items-center gap-1 sm:gap-1.5 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">
                 <Search className="w-3.5 h-3.5" />
                 <span>Search</span>
               </Link>
-              <Link to="/history" className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">
+              <Link to="/history" className="flex items-center gap-1 sm:gap-1.5 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">
                 <History className="w-3.5 h-3.5" />
                 <span>History</span>
               </Link>
-              <Link to="/wishlist" className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">
+              <Link to="/wishlist" className="flex items-center gap-1 sm:gap-1.5 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">
                 <Bookmark className="w-3.5 h-3.5" />
                 <span>Wishlist</span>
               </Link>
-              <Link to="/bought" className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">
+              <Link to="/bought" className="flex items-center gap-1 sm:gap-1.5 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">
                 <CheckCircle className="w-3.5 h-3.5" />
                 <span>Bought</span>
               </Link>
-              <Link to="/settings" className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">
+              <Link to="/settings" className="flex items-center gap-1 sm:gap-1.5 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">
                 <Sliders className="w-3.5 h-3.5" />
                 <span>Settings</span>
               </Link>
             </nav>
+            <ThemeToggle />
           </div>
-          <ThemeToggle />
         </header>
         <main className="flex-1">
           <Routes>

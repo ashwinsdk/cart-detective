@@ -27,6 +27,7 @@ class StructuredQuerySpec(BaseModel):
     size_fit_gender: str | None = None
     brands_included: list[str] = Field(default_factory=list)
     brands_excluded: list[str] = Field(default_factory=list)
+    marketplaces: list[str] = Field(default_factory=list)
 
 
 class ReviewClaims(BaseModel):
@@ -99,6 +100,46 @@ class HeuristicProvider(BaseLLMProvider):
         if deal_breakers:
             red_flags.extend([item.strip() for item in deal_breakers.split(",") if item.strip()])
 
+        # Automatic brand discovery if user specified none
+        user_brands = raw_input.get("brands_included")
+        if isinstance(user_brands, str):
+            user_brands = [b.strip() for b in user_brands.split(",") if b.strip()]
+        elif not isinstance(user_brands, list):
+            user_brands = []
+
+        brands_included: list[str] = list(user_brands)
+        if not brands_included:
+            if any(k in p_lower for k in ["riding", "motorcycle"]):
+                brands_included = ["Rynox", "Royal Enfield", "Viaterra", "Alpinestars"]
+            elif any(k in p_lower for k in ["running", "shoe", "sneaker"]):
+                brands_included = ["Asics", "Nike", "Puma", "Adidas"]
+            elif any(k in p_lower for k in ["backpack", "bag"]):
+                brands_included = ["Mokobara", "American Tourister", "Lenovo", "Samsonite"]
+            elif any(k in p_lower for k in ["keyboard"]):
+                brands_included = ["Keychron", "Logitech", "Ducky", "Royal Kludge"]
+            elif any(k in p_lower for k in ["headphone", "earphone", "audio"]):
+                brands_included = ["Sony", "Sennheiser", "Audio-Technica", "Bose"]
+
+        # Automatic marketplace and store discovery if user specified none
+        user_markets = raw_input.get("marketplaces")
+        if isinstance(user_markets, str):
+            user_markets = [m.strip() for m in user_markets.split(",") if m.strip()]
+        elif not isinstance(user_markets, list):
+            user_markets = []
+
+        marketplaces: list[str] = list(user_markets)
+        if not marketplaces:
+            if currency == "INR":
+                marketplaces = ["Amazon.in", "Flipkart", "Brand Webstores"]
+            elif currency == "USD":
+                marketplaces = ["Amazon.com", "Best Buy", "Brand Webstores"]
+            elif currency == "EUR":
+                marketplaces = ["Amazon.de", "Brand Webstores"]
+            elif currency == "GBP":
+                marketplaces = ["Amazon.co.uk", "Brand Webstores"]
+            else:
+                marketplaces = ["Amazon", "Brand Webstores"]
+
         keywords = [product_type]
         if colors:
             keywords.extend(colors)
@@ -116,8 +157,9 @@ class HeuristicProvider(BaseLLMProvider):
             search_keywords=list(dict.fromkeys(keywords)),
             color_preferences=colors,
             size_fit_gender=size_gender,
-            brands_included=raw_input.get("brands_included", []),
+            brands_included=brands_included,
             brands_excluded=raw_input.get("brands_excluded", []),
+            marketplaces=marketplaces,
         )
 
     async def extract_review_claims(self, text: str) -> ReviewClaims:
@@ -208,8 +250,11 @@ class GroqProvider(BaseLLMProvider):
             '  "color_preferences": ["string"],\n'
             '  "size_fit_gender": "string or null",\n'
             '  "brands_included": ["string"],\n'
-            '  "brands_excluded": ["string"]\n'
+            '  "brands_excluded": ["string"],\n'
+            '  "marketplaces": ["string"]\n'
             "}\n"
+            "If brands_included is empty, discover and populate top 3 to 5 authoritative brands for this category.\n"
+            "If marketplaces is empty, discover and populate relevant retailers and marketplaces for this category and currency.\n"
             f"User Criteria: {json.dumps(raw_input)}"
         )
 

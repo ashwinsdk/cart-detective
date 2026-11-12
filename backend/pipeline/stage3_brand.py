@@ -68,6 +68,42 @@ KNOWN_BRAND_REPUTATION = {
         "support": "National electronics service centers",
         "negatives": [],
     },
+    "adidas": {
+        "score": 88.0,
+        "warranty": "3 months manufacturing warranty",
+        "support": "Nationwide brand stores and online returns",
+        "negatives": [],
+    },
+    "samsonite": {
+        "score": 90.0,
+        "warranty": "3 to 10 years global warranty",
+        "support": "Global service network and authorized dealers",
+        "negatives": [],
+    },
+    "sony": {
+        "score": 93.0,
+        "warranty": "1 year national warranty",
+        "support": "Extensive authorized service center presence",
+        "negatives": [],
+    },
+    "sennheiser": {
+        "score": 91.0,
+        "warranty": "2 years international warranty",
+        "support": "Official service partners in metro centers",
+        "negatives": [],
+    },
+    "logitech": {
+        "score": 89.0,
+        "warranty": "2 years replacement warranty",
+        "support": "Rapid national replacement network",
+        "negatives": [],
+    },
+    "keychron": {
+        "score": 86.0,
+        "warranty": "1 year distributor warranty",
+        "support": "Authorized distributor support and spare parts",
+        "negatives": [],
+    },
 }
 
 
