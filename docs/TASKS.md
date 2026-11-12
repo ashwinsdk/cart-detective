@@ -18,11 +18,11 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 ## Stage 2: Phased Implementation Roadmap
 
 ### Phase 0: Scaffold, Tooling, Docker, and CI
-- [ ] Branch: `phase/0-scaffold`
-- [ ] Initialize Python 3.12 backend with `uv` (`pyproject.toml`, FastAPI, SQLAlchemy, Pydantic v2, Ruff, pytest, Playwright).
-- [ ] Initialize React Vite TypeScript frontend (`package.json`, Tailwind CSS, shadcn/ui, React Router, Vitest).
-- [ ] Verify Docker Compose setup for api, web, and searxng.
-- [ ] Acceptance Criteria: `make test` and `make lint` execute and pass on both backend and frontend.
+- [x] Branch: `phase/0-scaffold`
+- [x] Initialize Python 3.12 backend with `uv` (`pyproject.toml`, FastAPI, SQLAlchemy, Pydantic v2, Ruff, pytest, Playwright).
+- [x] Initialize React Vite TypeScript frontend (`package.json`, Tailwind CSS, shadcn/ui, React Router, Vitest).
+- [x] Verify Docker Compose setup for api, web, and searxng.
+- [x] Acceptance Criteria: `make test` and `make lint` execute and pass on both backend and frontend.
 
 ### Phase 1: Data Model, Migrations, and Repository Layer
 - [ ] Branch: `phase/1-data-model`
