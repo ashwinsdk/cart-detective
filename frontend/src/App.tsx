@@ -3,6 +3,10 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Moon, Sun, Search, History, Bookmark, CheckCircle, Sliders } from "lucide-react";
 import { SearchPage } from "./pages/SearchPage";
 import { RunPage } from "./pages/RunPage";
+import { HistoryPage } from "./pages/HistoryPage";
+import { WishlistPage } from "./pages/WishlistPage";
+import { BoughtPage } from "./pages/BoughtPage";
+import { SettingsPage } from "./pages/SettingsPage";
 
 function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
@@ -72,10 +76,10 @@ export function App() {
           <Routes>
             <Route path="/" element={<SearchPage />} />
             <Route path="/runs/:runId" element={<RunPage />} />
-            <Route path="/history" element={<div className="p-6 max-w-4xl mx-auto"><h2 className="text-lg font-medium">History</h2></div>} />
-            <Route path="/wishlist" element={<div className="p-6 max-w-4xl mx-auto"><h2 className="text-lg font-medium">Wishlist</h2></div>} />
-            <Route path="/bought" element={<div className="p-6 max-w-4xl mx-auto"><h2 className="text-lg font-medium">Bought</h2></div>} />
-            <Route path="/settings" element={<div className="p-6 max-w-4xl mx-auto"><h2 className="text-lg font-medium">Settings</h2></div>} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
+            <Route path="/bought" element={<BoughtPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </main>
       </div>

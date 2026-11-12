@@ -76,13 +76,13 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 - [x] Acceptance Criteria: Search form dispatches run, displays live progress without console errors.
 
 ### Phase 8: Frontend Results, Comparison, Workspace, and Settings
-- [ ] Branch: `phase/8-frontend-views`
-- [ ] Build Results view with ranked product cards, price snapshots, pros and cons, and evidence links.
-- [ ] Build side-by-side product comparison table for top 3 to 5 products.
-- [ ] Build History, Wishlist, and Bought tracking pages with local persistence.
-- [ ] Build Settings page with scoring weight sliders and API key status indicators.
-- [ ] Implement CSV and JSON export functionality.
-- [ ] Acceptance Criteria: All user journeys operate cleanly; data persists across page reloads.
+- [x] Branch: `phase/8-frontend-views`
+- [x] Build Results view with ranked product cards, price snapshots, pros and cons, and evidence links.
+- [x] Build side-by-side product comparison table for top 3 to 5 products.
+- [x] Build History, Wishlist, and Bought tracking pages with local persistence.
+- [x] Build Settings page with scoring weight sliders and API key status indicators.
+- [x] Implement CSV and JSON export functionality.
+- [x] Acceptance Criteria: All user journeys operate cleanly; data persists across page reloads.
 
 ### Phase 9: End-to-End Reference Queries and Pipeline Refinement
 - [ ] Branch: `phase/9-e2e-testing`
