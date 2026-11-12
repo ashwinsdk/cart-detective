@@ -30,6 +30,17 @@ class DiscoveredCandidate:
     is_dropped: bool = False
     drop_reason: str | None = None
 
+    # Stage 4 to 6 attributes
+    scraped_specs: dict[str, Any] = field(default_factory=dict)
+    scraped_offers: list[dict[str, Any]] = field(default_factory=list)
+    reviews: list[dict[str, Any]] = field(default_factory=list)
+    videos: list[dict[str, Any]] = field(default_factory=list)
+    verified_specs: dict[str, Any] = field(default_factory=dict)
+    claims_evidence: list[dict[str, Any]] = field(default_factory=list)
+    fake_review_metrics: dict[str, Any] = field(default_factory=dict)
+    color_available: bool = True
+    size_available: bool = True
+
 
 @dataclass
 class PipelineTelemetry:

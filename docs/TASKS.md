@@ -47,11 +47,11 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 - [x] Acceptance Criteria: Pipeline executes stages 1 to 3, emitting candidates with brand reputation metrics.
 
 ### Phase 4: Pipeline Stages 4 to 6
-- [ ] Branch: `phase/4-pipeline-core`
-- [ ] Stage 4 (Crawl and Scrape): Extract structured attributes, prices, and availability using selectolax and Playwright. Mark blocked pages as "unavailable".
-- [ ] Stage 5 (Reviews and YouTube): Collect marketplace reviews and YouTube video transcripts (fallback to titles, descriptions, top comments).
-- [ ] Stage 6 (Verify and Validate): Cross-check specs across independent sources; verify color and size availability at listed price; tag unconfirmed specs as "unverified"; calculate fake review indicators.
-- [ ] Acceptance Criteria: Structured specs extracted and validated; verified source URLs assigned to all claims.
+- [x] Branch: `phase/4-pipeline-core`
+- [x] Stage 4 (Crawl and Scrape): Extract structured attributes, prices, and availability using selectolax and Playwright. Mark blocked pages as "unavailable".
+- [x] Stage 5 (Reviews and YouTube): Collect marketplace reviews and YouTube video transcripts (fallback to titles, descriptions, top comments).
+- [x] Stage 6 (Verify and Validate): Cross-check specs across independent sources; verify color and size availability at listed price; tag unconfirmed specs as "unverified"; calculate fake review indicators.
+- [x] Acceptance Criteria: Structured specs extracted and validated; verified source URLs assigned to all claims.
 
 ### Phase 5: Scoring Engine and Explanations
 - [ ] Branch: `phase/5-scoring`
