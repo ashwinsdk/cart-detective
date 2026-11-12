@@ -47,6 +47,57 @@ class VerificationStage:
         mandatory_specs = spec.mandatory_specs if spec else []
         requested_colors = [c.lower() for c in (spec.color_preferences if spec else [])]
 
+        # 0. Category Relevance Validation
+        if spec:
+            p_lower = spec.product_type.lower()
+            is_adventure_helmet = (
+                "adventure helmet" in p_lower
+                or (
+                    "helmet" in p_lower
+                    and any(
+                        w in p_lower
+                        for w in ["adventure", "dual sport", "off-road", "enduro", "trail"]
+                    )
+                )
+                or any("peak" in str(req).lower() for req in mandatory_specs)
+            )
+            if is_adventure_helmet:
+                for candidate in ctx.candidates:
+                    if candidate.is_dropped:
+                        continue
+                    c_title = candidate.title.lower()
+                    c_model = candidate.canonical_model.lower()
+                    c_desc = str(candidate.scraped_specs.get("description", "")).lower()
+                    c_text = f"{c_title} {c_model} {c_desc}"
+                    has_adv_feature = any(
+                        k in c_text
+                        for k in [
+                            "adventure",
+                            "dual sport",
+                            "allterra",
+                            "pioneer",
+                            "synchrony",
+                            "off-road",
+                            "enduro",
+                            "trail",
+                            "motocross",
+                            "mx",
+                            "peak",
+                        ]
+                    )
+                    # Disqualify helmets that lack adventure / dual-sport design or peak visor
+                    if not has_adv_feature:
+                        candidate.is_dropped = True
+                        candidate.drop_reason = (
+                            f"Product '{candidate.title}' does not belong to the "
+                            "adventure helmet category (missing peak visor/dual-sport shell)."
+                        )
+                        ctx.log(
+                            6,
+                            f"Disqualified candidate {candidate.title}: {candidate.drop_reason}",
+                            level="WARNING",
+                        )
+
         for candidate in ctx.candidates:
             if candidate.is_dropped:
                 continue
@@ -106,11 +157,16 @@ class VerificationStage:
                     "sources": list(source_domains),
                 }
 
-                primary_url = (
-                    candidate.seed_urls[0]
-                    if candidate.seed_urls
-                    else "https://cart-detective.local/unverified"
-                )
+                primary_url = None
+                for off in candidate.scraped_offers:
+                    if off.get("status") == "verified" and off.get("url"):
+                        primary_url = off.get("url")
+                        break
+                if not primary_url and candidate.seed_urls:
+                    primary_url = candidate.seed_urls[0]
+                if not primary_url:
+                    primary_url = "https://cart-detective.local/unverified"
+
                 claims_evidence_list.append(
                     {
                         "claim": claim_text,
@@ -130,11 +186,6 @@ class VerificationStage:
                         "status": status,
                         "sources": list(source_domains),
                     }
-                    primary_url = (
-                        candidate.seed_urls[0]
-                        if candidate.seed_urls
-                        else "https://cart-detective.local/unverified"
-                    )
                     claims_evidence_list.append(
                         {
                             "claim": claim_text,

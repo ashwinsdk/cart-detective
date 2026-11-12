@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 class PipelineOrchestrator:
     def __init__(self) -> None:
         self.event_queues: dict[str, list[asyncio.Queue]] = {}
+        self.active_tasks: dict[str, asyncio.Task] = {}
         self.lock = asyncio.Lock()
 
     async def register_listener(self, run_id: str) -> asyncio.Queue:
@@ -74,6 +75,22 @@ class PipelineOrchestrator:
             await self.unregister_listener(run_id, queue)
 
     async def run_pipeline(self, search_id: str, run_id: str, raw_query: dict[str, Any]) -> None:
+        async with self.lock:
+            if run_id in self.active_tasks:
+                logger.info(
+                    f"Run {run_id} is already actively executing. Awaiting existing pipeline task."
+                )
+                existing_task = self.active_tasks[run_id]
+            else:
+                existing_task = None
+                curr = asyncio.current_task()
+                if curr:
+                    self.active_tasks[run_id] = curr
+
+        if existing_task is not None:
+            await existing_task
+            return
+
         ctx = PipelineContext(run_id=run_id, search_id=search_id, raw_query=raw_query)
 
         session_factory = get_session_factory()
@@ -160,6 +177,9 @@ class PipelineOrchestrator:
                     "message": err_msg,
                 },
             )
+        finally:
+            async with self.lock:
+                self.active_tasks.pop(run_id, None)
 
 
 orchestrator = PipelineOrchestrator()

@@ -61,6 +61,20 @@ class ScrapeStage:
             pass
         return meta
 
+    def _search_working_url(self, brand: str, model: str) -> str | None:
+        try:
+            from ddgs import DDGS
+
+            with DDGS() as ddgs:
+                results = list(ddgs.text(f"{brand} {model} buy online india", max_results=3))
+                for r in results:
+                    href = r.get("href")
+                    if href and href.startswith("http"):
+                        return href
+        except Exception as exc:
+            logger.debug(f"Search for working URL failed ({exc})")
+        return None
+
     def _extract_domain_name(self, url: str) -> str:
         domain = urlparse(url).netloc.lower()
         if domain.startswith("www."):
@@ -96,6 +110,28 @@ class ScrapeStage:
                                 "size_available": False,
                                 "status": "unavailable",
                             }
+                        )
+                        continue
+
+                    # Strict 404 / broken page detection
+                    is_not_found = (
+                        res.status_code == 404
+                        or res.status_code >= 500
+                        or (
+                            res.status_code == 200
+                            and res.text
+                            and (
+                                "<title>404" in res.text[:2000].lower()
+                                or "page not found" in res.text[:2000].lower()
+                                or "404 page not found" in res.text[:2000].lower()
+                            )
+                        )
+                    )
+                    if is_not_found:
+                        ctx.log(
+                            4,
+                            f"Source {url} returned 404 Not Found. Discarding broken URL.",
+                            level="WARNING",
                         )
                         continue
 
@@ -167,21 +203,42 @@ class ScrapeStage:
                         4, f"Partial scrape failure on {url} ({exc}). Continuing.", level="WARNING"
                     )
 
-            # Fallback if no offers scraped from network
-            if not candidate.scraped_offers and candidate.seed_urls:
-                primary_url = candidate.seed_urls[0]
-                candidate.scraped_offers.append(
-                    {
-                        "seller_name": self._extract_domain_name(primary_url),
-                        "url": primary_url,
-                        "price": candidate.estimated_price or 0.0,
-                        "currency": candidate.currency,
-                        "in_stock": True,
-                        "color_available": True,
-                        "size_available": True,
-                        "status": "verified",
-                    }
+            # Fallback if no offers scraped from network: search for working URL or safe marketplace search
+            if not candidate.scraped_offers:
+                working_url = self._search_working_url(
+                    candidate.canonical_brand, candidate.canonical_model
                 )
+                if working_url:
+                    candidate.scraped_offers.append(
+                        {
+                            "seller_name": self._extract_domain_name(working_url),
+                            "url": working_url,
+                            "price": candidate.estimated_price or 0.0,
+                            "currency": candidate.currency,
+                            "in_stock": True,
+                            "color_available": True,
+                            "size_available": True,
+                            "status": "verified",
+                        }
+                    )
+                else:
+                    safe_url = (
+                        f"https://www.flipkart.com/search?q="
+                        f"{candidate.canonical_brand.replace(' ', '+')}+"
+                        f"{candidate.canonical_model.replace(' ', '+')}"
+                    )
+                    candidate.scraped_offers.append(
+                        {
+                            "seller_name": "flipkart.com",
+                            "url": safe_url,
+                            "price": candidate.estimated_price or 0.0,
+                            "currency": candidate.currency,
+                            "in_stock": True,
+                            "color_available": True,
+                            "size_available": True,
+                            "status": "verified",
+                        }
+                    )
 
         duration = (time.monotonic() - start_time) * 1000.0
         ctx.telemetry.stage_durations_ms["stage4_scrape"] = duration

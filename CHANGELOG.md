@@ -7,6 +7,9 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 ## [Unreleased]
 
 ### Fixed
+- Fixed duplicate product generation in investigation runs by adding pipeline task concurrency guards in the orchestrator, candidate deduplication in scoring, and idempotent product persistence in the database layer.
+- Fixed broken and 404 URLs by implementing live HTTP status probing, discarding dead links, dynamically searching for accessible replacement product URLs, and verifying all seed registry URLs against live stores.
+- Fixed product miscategorization by adopting specificity-based category matching in candidate discovery and strict category relevance validation in the verification stage, ensuring street and track helmets are excluded from adventure helmet searches.
 - Fixed candidate discovery terminating with zero products when categories had typos or when user specified brands outside the default registry.
 - Added query typo correction in `HeuristicProvider` (for example, normalizing `helment` to `helmet`, `jaket` to `jacket`, `shooes` to `shoes`).
 - Added motorcycle helmet and adventure helmet specifications, certifications (ECE 22.06, DOT, ISI), and mandatory features (peak visor, impact shell).

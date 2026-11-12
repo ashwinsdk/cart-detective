@@ -22,9 +22,19 @@ class PresentStage:
         async with session_factory() as session:
             repo = Repository(session)
 
+            # Clear any pre-existing products for idempotency
+            await repo.clear_products_for_run(ctx.run_id)
+
+            persisted_keys: set[str] = set()
+
             for candidate in ctx.candidates:
                 if candidate.is_dropped:
                     continue
+
+                dedup_key = f"{candidate.canonical_brand.strip().lower()}:{candidate.canonical_model.strip().lower()}"
+                if dedup_key in persisted_keys:
+                    continue
+                persisted_keys.add(dedup_key)
 
                 # 1. Create Product
                 specs = dict(candidate.scraped_specs)
@@ -49,12 +59,18 @@ class PresentStage:
                     verdict=verdict,
                 )
 
-                # 2. Add Offers
+                # 2. Add Offers with URL deduplication
+                seen_offer_urls: set[str] = set()
                 for off in candidate.scraped_offers:
+                    offer_url = off.get("url", "").strip()
+                    if not offer_url or offer_url in seen_offer_urls:
+                        continue
+                    seen_offer_urls.add(offer_url)
+
                     await repo.add_offer(
                         product_id=product.id,
                         seller_name=off.get("seller_name", "Unknown Seller"),
-                        url=off.get("url", ""),
+                        url=offer_url,
                         price=off.get("price", candidate.estimated_price or 0.0),
                         currency=off.get("currency", candidate.currency),
                         in_stock=off.get("in_stock", True),

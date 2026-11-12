@@ -49,23 +49,23 @@ CURATED_CANDIDATE_REGISTRY = {
     ],
     "adventure helmet": [
         {
-            "brand": "LS2",
-            "model": "Pioneer II Dual Sport",
-            "title": "LS2 Pioneer II Dual Sport Adventure Helmet",
-            "price": 10500.0,
-            "urls": [
-                "https://ls2helmets.com/products/pioneer-ii",
-                "https://amazon.in/dp/B09LS2PION",
-            ],
-        },
-        {
             "brand": "Axor",
             "model": "X-Cross Dual Sport",
             "title": "Axor X-Cross Dual Sport Adventure Helmet",
             "price": 5199.0,
             "urls": [
-                "https://axorhelmets.com/products/x-cross",
-                "https://amazon.in/dp/B08AXORXC1",
+                "https://axorhelmets.com/collections/axor-x-cross",
+                "https://www.flipkart.com/axor-x-cross-motorbike-helmet/p/itm785cbf0482862",
+            ],
+        },
+        {
+            "brand": "LS2",
+            "model": "Pioneer II Dual Sport",
+            "title": "LS2 Pioneer II Dual Sport Adventure Helmet",
+            "price": 10500.0,
+            "urls": [
+                "https://ls2helmetsindia.com/products/mx436-pioneer-ii-solid-matt-black-06",
+                "https://motocentral.in/collections/ls2-helmets-india",
             ],
         },
         {
@@ -74,8 +74,8 @@ CURATED_CANDIDATE_REGISTRY = {
             "title": "SMK Allterra Solid Dual Sport Helmet",
             "price": 5250.0,
             "urls": [
-                "https://smkhelmets.com/products/allterra",
-                "https://amazon.in/dp/B07SMKALLT",
+                "https://www.store4riders.com/motorcycle-helmets/off-road-helmets/smk-allterra-helmets.html",
+                "https://ridersjunction.com/collections/smk-allterra?page=1",
             ],
         },
         {
@@ -84,30 +84,20 @@ CURATED_CANDIDATE_REGISTRY = {
             "title": "MT Synchrony SV Dual Sport Adventure Helmet",
             "price": 7250.0,
             "urls": [
-                "https://mthelmets.com/products/synchrony-sv",
-                "https://amazon.in/dp/B08MTSYNC1",
+                "https://motocentral.in/collections/mt-helmets",
+                "https://www.tradeinn.com/motardinn/en/mt-helmets-synchrony-sv-duo-sport-full-face-helmet/1234139/p",
             ],
         },
     ],
     "helmet": [
-        {
-            "brand": "LS2",
-            "model": "Pioneer II Dual Sport",
-            "title": "LS2 Pioneer II Dual Sport Adventure Helmet",
-            "price": 10500.0,
-            "urls": [
-                "https://ls2helmets.com/products/pioneer-ii",
-                "https://amazon.in/dp/B09LS2PION",
-            ],
-        },
         {
             "brand": "Axor",
             "model": "Apex Solid",
             "title": "Axor Apex Solid Full Face Helmet",
             "price": 4650.0,
             "urls": [
-                "https://axorhelmets.com/products/apex",
-                "https://amazon.in/dp/B08AXORAPX",
+                "https://www.flipkart.com/axor-apex-solid-motorbike-helmet/p/itm55b1eb1245fa7",
+                "https://axorhelmets.com/collections/helmets",
             ],
         },
         {
@@ -116,8 +106,8 @@ CURATED_CANDIDATE_REGISTRY = {
             "title": "SMK Stellar Full Face Helmet",
             "price": 3950.0,
             "urls": [
-                "https://smkhelmets.com/products/stellar",
-                "https://amazon.in/dp/B07SMKSTEL",
+                "https://www.flipkart.com/smk-stellar-solid-full-face-helmet/p/itmfbzh2wgy8ff7x",
+                "https://smkhelmets.com",
             ],
         },
         {
@@ -126,8 +116,8 @@ CURATED_CANDIDATE_REGISTRY = {
             "title": "MT Thunder 4 SV ECE 22.06 Helmet",
             "price": 12950.0,
             "urls": [
-                "https://mthelmets.com/products/thunder-4",
-                "https://amazon.in/dp/B09MTTHUND",
+                "https://motocentral.in/collections/mt-helmets",
+                "https://mthelmets.com",
             ],
         },
     ],
@@ -137,21 +127,30 @@ CURATED_CANDIDATE_REGISTRY = {
             "model": "Gel Kayano 30",
             "title": "Asics Gel-Kayano 30 Running Shoes",
             "price": 11999.0,
-            "urls": ["https://asics.co.in/gel-kayano-30", "https://amazon.in/dp/B08ASICS01"],
+            "urls": [
+                "https://asics.co.in/collections/running",
+                "https://www.amazon.in/s?k=asics+gel+kayano+30",
+            ],
         },
         {
             "brand": "Nike",
             "model": "Pegasus 40",
             "title": "Nike Air Zoom Pegasus 40",
             "price": 8495.0,
-            "urls": ["https://nike.com/in/pegasus-40", "https://myntra.com/nike-pegasus-40"],
+            "urls": [
+                "https://www.flipkart.com/search?q=nike+pegasus+40",
+                "https://www.amazon.in/s?k=nike+air+zoom+pegasus+40",
+            ],
         },
         {
             "brand": "Puma",
             "model": "Velocity Nitro 2",
             "title": "Puma Velocity Nitro 2 Running Shoes",
             "price": 4999.0,
-            "urls": ["https://in.puma.com/velocity-nitro-2", "https://amazon.in/dp/B07PUMA002"],
+            "urls": [
+                "https://in.puma.com/in/en/pd/velocity-nitro-2-mens-running-shoes/195337",
+                "https://www.amazon.in/s?k=puma+velocity+nitro+2",
+            ],
         },
     ],
     "laptop backpack": [
@@ -161,8 +160,8 @@ CURATED_CANDIDATE_REGISTRY = {
             "title": "Mokobara The Transit Backpack 15.6 inch",
             "price": 4499.0,
             "urls": [
-                "https://mokobara.com/products/transit-backpack",
-                "https://amazon.in/dp/B08MOKO001",
+                "https://mokobara.com/products/the-transit-backpack",
+                "https://www.amazon.in/s?k=mokobara+transit+backpack",
             ],
         },
         {
@@ -170,7 +169,10 @@ CURATED_CANDIDATE_REGISTRY = {
             "model": "Valex",
             "title": "American Tourister Valex 28L Laptop Backpack",
             "price": 1899.0,
-            "urls": ["https://americantourister.in/valex-28l", "https://amazon.in/dp/B07ATVALEX"],
+            "urls": [
+                "https://americantourister.in",
+                "https://www.amazon.in/s?k=american+tourister+valex",
+            ],
         },
         {
             "brand": "Lenovo",
@@ -178,8 +180,8 @@ CURATED_CANDIDATE_REGISTRY = {
             "title": "Lenovo Legion 15.6 inch Recon Gaming Backpack",
             "price": 2899.0,
             "urls": [
-                "https://lenovo.com/in/legion-recon",
-                "https://flipkart.com/lenovo-legion-recon",
+                "https://www.lenovo.com/in/en/p/accessories-and-software/cases-and-bags/backpacks/gx40s89445",
+                "https://www.flipkart.com/search?q=lenovo+legion+recon",
             ],
         },
     ],
@@ -245,26 +247,31 @@ class DiscoverStage:
         # 1. Match from Curated Seed Registry
         matched_registry_items: list[dict] = []
 
-        # Check for direct phrase match
-        for category_key, items in CURATED_CANDIDATE_REGISTRY.items():
-            if category_key in p_type or p_type in category_key:
-                matched_registry_items.extend(items)
+        # Sort category keys by specificity (multi-word categories first)
+        sorted_categories = sorted(
+            CURATED_CANDIDATE_REGISTRY.keys(),
+            key=lambda k: len(k.split()),
+            reverse=True,
+        )
 
-        # If no direct phrase match, check word-level / stem overlap
+        p_words = set(re.findall(r"[a-z0-9]+", p_type))
+
+        for category_key in sorted_categories:
+            cat_words = set(category_key.split())
+            if cat_words.issubset(p_words):
+                matched_registry_items.extend(CURATED_CANDIDATE_REGISTRY[category_key])
+                break
+
+        # Fallback to single-word overlap only if no multi-word category matched
         if not matched_registry_items:
-            p_words = set(re.findall(r"[a-z0-9]+", p_type))
-            for category_key, items in CURATED_CANDIDATE_REGISTRY.items():
-                cat_words = set(re.findall(r"[a-z0-9]+", category_key))
-                if p_words & cat_words or any(
-                    pw.startswith(cw) or cw.startswith(pw)
-                    for pw in p_words
-                    for cw in cat_words
-                    if len(pw) >= 4 and len(cw) >= 4
-                ):
-                    matched_registry_items.extend(items)
+            for category_key in sorted_categories:
+                cat_words = set(category_key.split())
+                if p_words & cat_words:
+                    matched_registry_items.extend(CURATED_CANDIDATE_REGISTRY[category_key])
+                    break
 
-        # If user specified brands, search across all registry items for those brands
-        if spec.brands_included:
+        # If user specified brands and no candidates were found yet, check matching items
+        if spec.brands_included and not matched_registry_items:
             for items in CURATED_CANDIDATE_REGISTRY.values():
                 for item in items:
                     if any(inc.lower() in item["brand"].lower() for inc in spec.brands_included):
@@ -375,25 +382,22 @@ class DiscoverStage:
                 ):
                     continue
 
-                # Look for matching model in curated registry
+                # Look for matching model in matched category items first
                 brand_found = False
-                for items in CURATED_CANDIDATE_REGISTRY.values():
-                    for item in items:
-                        if b_clean.lower() in item["brand"].lower():
-                            dedup_key = self._normalize_key(item["brand"], item["model"])
-                            if dedup_key not in candidates_map:
-                                candidates_map[dedup_key] = DiscoveredCandidate(
-                                    canonical_brand=item["brand"],
-                                    canonical_model=item["model"],
-                                    title=item["title"],
-                                    seed_urls=list(item["urls"]),
-                                    estimated_price=item["price"],
-                                    currency=spec.currency,
-                                )
-                                brand_found = True
-                                break
-                    if brand_found:
-                        break
+                for item in matched_registry_items:
+                    if b_clean.lower() in item["brand"].lower():
+                        dedup_key = self._normalize_key(item["brand"], item["model"])
+                        if dedup_key not in candidates_map:
+                            candidates_map[dedup_key] = DiscoveredCandidate(
+                                canonical_brand=item["brand"],
+                                canonical_model=item["model"],
+                                title=item["title"],
+                                seed_urls=list(item["urls"]),
+                                estimated_price=item["price"],
+                                currency=spec.currency,
+                            )
+                            brand_found = True
+                            break
 
                 # Synthesize candidate if not found in registry
                 if not brand_found:

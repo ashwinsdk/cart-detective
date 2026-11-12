@@ -201,6 +201,14 @@ class Repository:
         result = await self.session.execute(stmt)
         return result.scalars().all()
 
+    async def clear_products_for_run(self, run_id: str) -> None:
+        stmt = select(Product).where(Product.run_id == run_id)
+        result = await self.session.execute(stmt)
+        products = result.scalars().all()
+        for p in products:
+            await self.session.delete(p)
+        await self.session.flush()
+
     # Child entities
     async def add_offer(
         self,
