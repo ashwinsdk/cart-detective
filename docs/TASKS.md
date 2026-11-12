@@ -85,12 +85,12 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 - [x] Acceptance Criteria: All user journeys operate cleanly; data persists across page reloads.
 
 ### Phase 9: End-to-End Reference Queries and Pipeline Refinement
-- [ ] Branch: `phase/9-e2e-testing`
-- [ ] Execute reference test query 1: Riding jacket under 12,000 INR (black).
-- [ ] Execute reference test query 2: Running shoes under 5,000 INR.
-- [ ] Execute reference test query 3: Laptop backpack under 3,000 INR.
-- [ ] Fix broken scrapers or edge cases; update `docs/PIPELINE.md` and `CHANGELOG.md` with findings.
-- [ ] Acceptance Criteria: All 3 reference queries return verified, sourced shortlists in degraded or online mode.
+- [x] Branch: `phase/9-e2e-testing`
+- [x] Execute reference test query 1: Riding jacket under 12,000 INR (black).
+- [x] Execute reference test query 2: Running shoes under 5,000 INR.
+- [x] Execute reference test query 3: Laptop backpack under 3,000 INR.
+- [x] Fix broken scrapers or edge cases; update `docs/PIPELINE.md` and `CHANGELOG.md` with findings.
+- [x] Acceptance Criteria: All 3 reference queries return verified, sourced shortlists in degraded or online mode.
 
 ### Phase 10: Hardening, Accessibility, and Release
 - [ ] Branch: `phase/10-hardening`

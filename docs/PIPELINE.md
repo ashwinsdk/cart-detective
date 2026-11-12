@@ -97,3 +97,12 @@ User Query Form
   - Added strict timeouts and retry caps per stage.
   - Added fallback degradation paths for keyless environments.
   - Enforced "unverified" tagging for uncorroborated specs.
+
+## 4. Empirical Findings and Pipeline Refinements (Phase 9 Reference Testing)
+
+Following end-to-end regression testing on reference queries (riding jacket, running shoes, laptop backpack), several key lessons were integrated into the pipeline architecture:
+
+1. **HTML Parser Selection**: Upgraded static parser from selectolax Modest to Lexbor engine (`LexborHTMLParser`). The Lexbor engine conforms to HTML5 parsing specifications and handles malformed microdata and embedded JSON-LD scripts without dropping tags.
+2. **Review Distribution Bimodality**: Refined fake review heuristics to require purchase verification signals alongside rating polarization. Legitimate niche equipment often receives polarized reviews from sizing mismatches rather than deceptive review rings.
+3. **YouTube Metadata Fallback**: Implemented automatic fallback from `youtube-transcript-api` to creator descriptions and top pinned comments when creators disable automated captions. This preserves video review extraction without crashing Stage 5.
+4. **Color and Size Availability Corroboration**: Enforced strict validation of requested color and size combinations against live seller offers to ensure displayed prices correspond to the buyer exact sizing requirements.
