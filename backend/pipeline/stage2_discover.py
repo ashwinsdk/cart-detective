@@ -1,10 +1,14 @@
 """Stage 2: Discover product candidates using search providers with deduplication."""
 
+import asyncio
+import json
 import logging
 import re
 import time
+from urllib.parse import quote_plus
 
 from backend.config import settings
+from backend.pipeline import relevance
 from backend.pipeline.context import DiscoveredCandidate, PipelineContext
 from backend.services.fetcher import fetcher
 
@@ -188,6 +192,29 @@ CURATED_CANDIDATE_REGISTRY = {
 }
 
 
+# Alternative phrasings that map to a registry category. Keys must exist in
+# CURATED_CANDIDATE_REGISTRY. Matching is done on stemmed terms.
+CATEGORY_ALIASES = {
+    "riding jacket": ["motorcycle jacket", "motorbike jacket", "bike jacket"],
+}
+
+MARKET_SUFFIX = {
+    "INR": "buy online india",
+    "USD": "buy online",
+    "EUR": "buy online",
+    "GBP": "buy online uk",
+}
+
+MAX_SEARCH_RESULTS = 10
+MAX_WEB_CANDIDATES = 8
+BUDGET_UPPER_TOLERANCE = 1.10
+BUDGET_LOWER_TOLERANCE = 0.80
+
+GENERIC_FIRST_WORDS = frozenset(
+    {"universal", "premium", "original", "genuine", "set", "pack", "pair", "buy", "shop"}
+)
+
+
 class DiscoverStage:
     def __init__(self) -> None:
         self.timeout_seconds = 20.0
@@ -201,16 +228,18 @@ class DiscoverStage:
     async def _query_searxng(self, query: str) -> list[dict]:
         if not settings.SEARXNG_URL:
             return []
-        url = f"{settings.SEARXNG_URL}/search?q={query}&format=json"
+        url = f"{settings.SEARXNG_URL}/search?q={quote_plus(query)}&format=json"
         try:
             res = await fetcher.fetch(url, timeout=5.0, respect_robots=False)
             if res.status_code == 200:
-                import json
-
                 data = json.loads(res.text)
-                return data.get("results", [])
+                return [
+                    {"title": r.get("title", ""), "url": r.get("url", "")}
+                    for r in data.get("results", [])
+                    if r.get("title")
+                ]
         except Exception as exc:
-            logger.debug(f"SearXNG query failed ({exc})")
+            logger.warning(f"SearXNG query failed ({exc})")
         return []
 
     def _query_duckduckgo(self, query: str) -> list[dict]:
@@ -221,15 +250,124 @@ class DiscoverStage:
                 from duckduckgo_search import DDGS
 
             with DDGS() as ddgs:
-                results = list(ddgs.text(query, max_results=5))
+                results = list(ddgs.text(query, max_results=MAX_SEARCH_RESULTS))
                 return [
                     {"title": r.get("title", ""), "url": r.get("href", "")}
                     for r in results
                     if r.get("title")
                 ]
         except Exception as exc:
-            logger.debug(f"DuckDuckGo search failed ({exc})")
+            logger.warning(f"DuckDuckGo search failed ({exc})")
             return []
+
+    async def _search(self, query: str, currency: str) -> list[dict]:
+        """Run one search with SearXNG first, then DuckDuckGo, with backoff."""
+        results = await self._query_searxng(query)
+        if results:
+            return results
+        suffix = MARKET_SUFFIX.get(currency, "buy online")
+        for attempt in range(self.max_retries):
+            results = await asyncio.to_thread(self._query_duckduckgo, f"{query} {suffix}")
+            if results:
+                return results
+            await asyncio.sleep(0.5 * (2**attempt))
+        return []
+
+    def match_registry_category(self, terms: list[str]) -> str | None:
+        """Return the registry key the query describes, or None.
+
+        Every word of the key (or one of its aliases) must appear in the query.
+        A single shared word is not enough, so "jacket" does not become
+        "riding jacket" and "laptop" does not become "laptop backpack".
+        """
+        if not terms or relevance.has_incompatible_qualifier(terms):
+            return None
+        term_set = set(terms)
+        best: tuple[int, str] | None = None
+        for key in CURATED_CANDIDATE_REGISTRY:
+            for phrase in [key, *CATEGORY_ALIASES.get(key, [])]:
+                words = set(relevance.core_terms(phrase))
+                if words and words.issubset(term_set):
+                    if best is None or len(words) > best[0]:
+                        best = (len(words), key)
+        return best[1] if best else None
+
+    def _brand_from_title(self, title: str, terms: list[str]) -> tuple[str, str]:
+        """Best-effort (brand, model) from a product title. Brand may be 'Generic'."""
+        tokens = [t for t in re.split(r"\s+", title.strip()) if t]
+        while tokens and tokens[0].lower() in relevance.LEADING_FLUFF:
+            tokens = tokens[1:]
+        first = re.sub(r"[^A-Za-z0-9\-]", "", tokens[0]) if tokens else ""
+        looks_like_brand = (
+            len(first) >= 2
+            and first[0].isalpha()
+            and first[0].isupper()
+            and relevance.stem(first) not in terms
+            and first.lower() not in relevance.STOPWORDS
+            and first.lower() not in GENERIC_FIRST_WORDS
+        )
+        if looks_like_brand:
+            return first, " ".join(tokens[1:4]) or first
+        return "Generic", " ".join(tokens[:4])
+
+    def _within_budget(self, price: float, spec) -> bool:
+        if spec.budget_max and price > spec.budget_max * BUDGET_UPPER_TOLERANCE:
+            return False
+        return not (spec.budget_min and price < spec.budget_min * BUDGET_LOWER_TOLERANCE)
+
+    def _add_web_results(
+        self,
+        results: list[dict],
+        spec,
+        terms: list[str],
+        candidates_map: dict[str, DiscoveredCandidate],
+        user_brands: list[str],
+        required_brand: str | None = None,
+    ) -> None:
+        for res in results[:MAX_SEARCH_RESULTS]:
+            if sum(1 for c in candidates_map.values() if c.source == "web") >= MAX_WEB_CANDIDATES:
+                return
+            title = (res.get("title") or "").strip()
+            link = res.get("url") or ""
+            if not title or relevance.is_blocked_domain(link) or relevance.is_category_page(link):
+                continue
+            if not relevance.looks_like_product_url(link):
+                continue
+            title = relevance.strip_retailer_prefix(title)
+            if not relevance.is_relevant_title(title, terms):
+                continue
+
+            if required_brand and required_brand.lower() not in title.lower():
+                continue
+
+            brand, model = self._brand_from_title(title, terms)
+            if brand == "Generic" and relevance.looks_like_store_page_title(title):
+                # Storefront or category headline with no identifiable product.
+                continue
+            if required_brand:
+                brand = required_brand.strip().title()
+                model = re.sub(re.escape(required_brand), "", title, flags=re.I).strip()
+                model = " ".join(model.split()[:3]) or title
+            if any(ex.lower() in brand.lower() for ex in spec.brands_excluded):
+                continue
+            if user_brands and not any(inc.lower() in title.lower() for inc in user_brands):
+                continue
+
+            key = self._normalize_key(brand, model)
+            if key in candidates_map:
+                if link and link not in candidates_map[key].seed_urls:
+                    candidates_map[key].seed_urls.append(link)
+                continue
+            candidates_map[key] = DiscoveredCandidate(
+                canonical_brand=brand,
+                canonical_model=model,
+                title=title,
+                seed_urls=[link] if link else [],
+                # Price is unknown until Stage 4 reads it from the page.
+                estimated_price=None,
+                currency=spec.currency,
+                source="web",
+            )
 
     async def execute(self, ctx: PipelineContext) -> None:
         start_time = time.monotonic()
@@ -241,211 +379,72 @@ class DiscoverStage:
             return
 
         spec = ctx.spec
-        p_type = spec.product_type.lower()
+        terms = relevance.core_terms(spec.product_type, spec.color_preferences)
+        query_words = relevance.core_words(spec.product_type, spec.color_preferences)
         candidates_map: dict[str, DiscoveredCandidate] = {}
 
-        # 1. Match from Curated Seed Registry
-        matched_registry_items: list[dict] = []
+        raw_brands = ctx.raw_query.get("brands_included") or []
+        if isinstance(raw_brands, str):
+            raw_brands = [b.strip() for b in raw_brands.split(",") if b.strip()]
+        user_brands = [b.strip() for b in raw_brands if b and b.strip()]
 
-        # Sort category keys by specificity (multi-word categories first)
-        sorted_categories = sorted(
-            CURATED_CANDIDATE_REGISTRY.keys(),
-            key=lambda k: len(k.split()),
-            reverse=True,
-        )
-
-        p_words = set(re.findall(r"[a-z0-9]+", p_type))
-
-        for category_key in sorted_categories:
-            cat_words = set(category_key.split())
-            if cat_words.issubset(p_words):
-                matched_registry_items.extend(CURATED_CANDIDATE_REGISTRY[category_key])
-                break
-
-        # Fallback to single-word overlap only if no multi-word category matched
-        if not matched_registry_items:
-            for category_key in sorted_categories:
-                cat_words = set(category_key.split())
-                if p_words & cat_words:
-                    matched_registry_items.extend(CURATED_CANDIDATE_REGISTRY[category_key])
-                    break
-
-        # If user specified brands and no candidates were found yet, check matching items
-        if spec.brands_included and not matched_registry_items:
-            for items in CURATED_CANDIDATE_REGISTRY.values():
-                for item in items:
-                    if any(inc.lower() in item["brand"].lower() for inc in spec.brands_included):
-                        if item not in matched_registry_items:
-                            matched_registry_items.append(item)
-
-        for item in matched_registry_items:
+        # 1. Curated registry: only when the query actually names a known category.
+        category = self.match_registry_category(terms)
+        if category:
+            ctx.log(2, f"Matched curated category '{category}'")
+        for item in CURATED_CANDIDATE_REGISTRY.get(category or "", []):
             brand = item["brand"]
-            model = item["model"]
-
-            # Filter excluded brands
             if any(ex.lower() in brand.lower() for ex in spec.brands_excluded):
                 continue
-            # If included brands specified, prioritize them
             if spec.brands_included and not any(
                 inc.lower() in brand.lower() for inc in spec.brands_included
             ):
                 continue
-
-            # Check budget upper bound if known
-            if spec.budget_max and item["price"] > spec.budget_max * 1.35:
+            if not self._within_budget(item["price"], spec):
                 continue
-
-            dedup_key = self._normalize_key(brand, model)
-            if dedup_key not in candidates_map:
-                candidates_map[dedup_key] = DiscoveredCandidate(
+            key = self._normalize_key(brand, item["model"])
+            candidates_map.setdefault(
+                key,
+                DiscoveredCandidate(
                     canonical_brand=brand,
-                    canonical_model=model,
+                    canonical_model=item["model"],
                     title=item["title"],
                     seed_urls=list(item["urls"]),
                     estimated_price=item["price"],
                     currency=spec.currency,
-                )
+                    source="registry",
+                ),
+            )
 
-        # 2. Query external search engines if configured or fallback to DuckDuckGo
-        search_query = (
-            " ".join(spec.search_keywords[:3]) if spec.search_keywords else spec.product_type
-        )
-        search_results: list[dict] = []
-        try:
-            search_results = await self._query_searxng(search_query)
-        except Exception as exc:
-            logger.debug(f"SearXNG query encountered error: {exc}")
+        # 2. Live search, filtered for relevance. Never invents products or prices.
+        search_query = " ".join(query_words) or spec.product_type
+        results = await self._search(search_query, spec.currency)
+        if not results and not candidates_map:
+            ctx.telemetry.partial_failures.append("Search providers returned no results")
+        self._add_web_results(results, spec, terms, candidates_map, user_brands)
 
-        if not search_results:
-            try:
-                search_results = self._query_duckduckgo(f"{search_query} buy india")
-            except Exception as exc:
-                logger.debug(f"DuckDuckGo search encountered error: {exc}")
-
-        for res in search_results[:5]:
-            title = res.get("title", "")
-            link = res.get("url", "")
-            if not title:
+        # 3. Each brand the user asked for gets its own targeted search.
+        for brand in user_brands:
+            if any(brand.lower() in c.canonical_brand.lower() for c in candidates_map.values()):
                 continue
-
-            # Extract brand and model from title
-            parts = title.split(" ")
-            if len(parts) >= 2:
-                cand_brand = parts[0]
-                cand_model = " ".join(parts[1:3])
-
-                # Check brand exclusions
-                if any(ex.lower() in cand_brand.lower() for ex in spec.brands_excluded):
-                    continue
-
-                if spec.brands_included and not any(
-                    inc.lower() in cand_brand.lower() for inc in spec.brands_included
-                ):
-                    # Keep priority to requested brands if already found
-                    if candidates_map:
-                        continue
-
-                key = self._normalize_key(cand_brand, cand_model)
-                if key not in candidates_map:
-                    candidates_map[key] = DiscoveredCandidate(
-                        canonical_brand=cand_brand,
-                        canonical_model=cand_model,
-                        title=title,
-                        seed_urls=[link] if link else [],
-                        estimated_price=(spec.budget_max * 0.85) if spec.budget_max else 5000.0,
-                        currency=spec.currency,
-                    )
-
-        # 3. If user specified brands, ensure each specified brand has candidate representation
-        user_specified_brands = ctx.raw_query.get("brands_included") or []
-        if isinstance(user_specified_brands, str):
-            user_specified_brands = [
-                b.strip() for b in user_specified_brands.split(",") if b.strip()
-            ]
-
-        target_brands = (
-            user_specified_brands
-            if user_specified_brands
-            else (spec.brands_included if not candidates_map else [])
-        )
-        if target_brands:
-            for b in target_brands:
-                b_clean = b.strip()
-                if not b_clean:
-                    continue
-                if any(ex.lower() in b_clean.lower() for ex in spec.brands_excluded):
-                    continue
-
-                # Check if already present in candidates_map
-                if any(
-                    b_clean.lower() in c.canonical_brand.lower() for c in candidates_map.values()
-                ):
-                    continue
-
-                # Look for matching model in matched category items first
-                brand_found = False
-                for item in matched_registry_items:
-                    if b_clean.lower() in item["brand"].lower():
-                        dedup_key = self._normalize_key(item["brand"], item["model"])
-                        if dedup_key not in candidates_map:
-                            candidates_map[dedup_key] = DiscoveredCandidate(
-                                canonical_brand=item["brand"],
-                                canonical_model=item["model"],
-                                title=item["title"],
-                                seed_urls=list(item["urls"]),
-                                estimated_price=item["price"],
-                                currency=spec.currency,
-                            )
-                            brand_found = True
-                            break
-
-                # Synthesize candidate if not found in registry
-                if not brand_found:
-                    brand_cap = b_clean.title()
-                    model_name = f"{spec.product_type.title()} Series"
-                    price_val = 5500.0
-                    if spec.budget_min and spec.budget_max:
-                        price_val = (spec.budget_min + spec.budget_max) / 2.0
-                    elif spec.budget_max:
-                        price_val = spec.budget_max * 0.85
-
-                    dedup_key = self._normalize_key(brand_cap, model_name)
-                    clean_slug = re.sub(r"[^a-zA-Z0-9]", "", b_clean.lower())
-                    p_slug = re.sub(r"[^a-zA-Z0-9]+", "-", spec.product_type.lower())
-                    candidates_map[dedup_key] = DiscoveredCandidate(
-                        canonical_brand=brand_cap,
-                        canonical_model=model_name,
-                        title=f"{brand_cap} {model_name}",
-                        seed_urls=[
-                            f"https://www.{clean_slug}.com/{p_slug}",
-                            f"https://amazon.in/s?k={clean_slug}+{p_slug}",
-                        ],
-                        estimated_price=round(price_val, 2),
-                        currency=spec.currency,
-                    )
-
-        # 4. Fallback if candidates_map is still empty
-        if not candidates_map:
-            for items in CURATED_CANDIDATE_REGISTRY.values():
-                for item in items:
-                    if not any(ex.lower() in item["brand"].lower() for ex in spec.brands_excluded):
-                        key = self._normalize_key(item["brand"], item["model"])
-                        candidates_map[key] = DiscoveredCandidate(
-                            canonical_brand=item["brand"],
-                            canonical_model=item["model"],
-                            title=item["title"],
-                            seed_urls=list(item["urls"]),
-                            estimated_price=item["price"],
-                            currency=spec.currency,
-                        )
-                        break
-                if len(candidates_map) >= 3:
-                    break
+            if any(ex.lower() in brand.lower() for ex in spec.brands_excluded):
+                continue
+            brand_results = await self._search(f"{brand} {search_query}", spec.currency)
+            self._add_web_results(
+                brand_results, spec, terms, candidates_map, user_brands, required_brand=brand
+            )
 
         ctx.candidates = list(candidates_map.values())
         duration = (time.monotonic() - start_time) * 1000.0
         ctx.telemetry.stage_durations_ms["stage2_discover"] = duration
         ctx.telemetry.stage_status["stage2_discover"] = "completed"
+        if not ctx.candidates:
+            ctx.log(
+                2,
+                f"No relevant products found for '{spec.product_type}'. "
+                "Returning an empty result instead of unrelated products.",
+                level="WARNING",
+            )
         ctx.log(
             2,
             f"Stage 2 completed: discovered {len(ctx.candidates)} deduplicated candidate products in {duration:.1f}ms",

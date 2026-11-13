@@ -26,6 +26,8 @@ class DiscoveredCandidate:
     seed_urls: list[str] = field(default_factory=list)
     estimated_price: float | None = None
     currency: str = "INR"
+    # "registry" for curated catalog entries, "web" for search-derived ones
+    source: str = "registry"
     brand_signal: BrandSignal | None = None
     is_dropped: bool = False
     drop_reason: str | None = None

@@ -7,6 +7,9 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 ## [Unreleased]
 
 ### Fixed
+- Fixed irrelevant search results: discovery no longer falls back to unrelated registry products, matches categories only when every category word is present, and no longer synthesizes brand products or invents prices. Web results must be relevant, non-listing, non-accessory pages with a product-shaped URL. Queries with no relevant match now return an explained empty result.
+- Fixed Stage 4 and SearXNG never fetching pages because `fetcher.fetch` rejected the `timeout` argument. Catalog prices are now marked unverified, offers are sorted best first, and verification applies relevance and budget checks to real scraped prices.
+- Fixed a NameError in verification when certifications were requested without mandatory specs, and made brand and category keyword checks in `HeuristicProvider` match whole words.
 - Fixed duplicate product generation in investigation runs by adding pipeline task concurrency guards in the orchestrator, candidate deduplication in scoring, and idempotent product persistence in the database layer.
 - Fixed broken and 404 URLs by implementing live HTTP status probing, discarding dead links, dynamically searching for accessible replacement product URLs, and verifying all seed registry URLs against live stores.
 - Fixed product miscategorization by adopting specificity-based category matching in candidate discovery and strict category relevance validation in the verification stage, ensuring street and track helmets are excluded from adventure helmet searches.

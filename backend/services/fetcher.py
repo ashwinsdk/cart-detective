@@ -143,6 +143,7 @@ class SharedFetcher:
         use_cache: bool = True,
         cache_ttl_seconds: float = 86400.0,
         respect_robots: bool = True,
+        timeout: float | None = None,
     ) -> FetchResult:
         if use_cache:
             cached = self.cache.get(url, max_age_seconds=cache_ttl_seconds)
@@ -156,7 +157,9 @@ class SharedFetcher:
         if headers:
             req_headers.update(headers)
 
-        async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True) as client:
+        async with httpx.AsyncClient(
+            timeout=timeout or self.timeout, follow_redirects=True
+        ) as client:
             if respect_robots:
                 allowed = await self.robots.can_fetch(url, client)
                 if not allowed:

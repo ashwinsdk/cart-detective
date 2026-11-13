@@ -151,7 +151,8 @@ class ScrapeStage:
                                 try:
                                     price_val = float(str(raw_price).replace(",", ""))
                                 except (ValueError, TypeError):
-                                    price_val = candidate.estimated_price or 0.0
+                                    # No readable price: do not substitute a catalog guess.
+                                    continue
 
                                 availability = str(off.get("availability", "")).lower()
                                 in_stock = "instock" in availability or "preorder" in availability
@@ -190,7 +191,8 @@ class ScrapeStage:
                                     "in_stock": True,
                                     "color_available": True,
                                     "size_available": True,
-                                    "status": "verified",
+                                    "price_source": "catalog",
+                                    "status": "unverified",
                                 }
                             )
 
@@ -204,7 +206,13 @@ class ScrapeStage:
                     )
 
             # Fallback if no offers scraped from network: search for working URL or safe marketplace search
-            if not candidate.scraped_offers:
+            if not candidate.scraped_offers and candidate.source != "registry":
+                ctx.log(
+                    4,
+                    f"No page for '{candidate.title}' could be read. No offer was created.",
+                    level="WARNING",
+                )
+            elif not candidate.scraped_offers:
                 working_url = self._search_working_url(
                     candidate.canonical_brand, candidate.canonical_model
                 )
@@ -218,7 +226,8 @@ class ScrapeStage:
                             "in_stock": True,
                             "color_available": True,
                             "size_available": True,
-                            "status": "verified",
+                            "price_source": "catalog",
+                            "status": "unverified",
                         }
                     )
                 else:
@@ -236,7 +245,8 @@ class ScrapeStage:
                             "in_stock": True,
                             "color_available": True,
                             "size_available": True,
-                            "status": "verified",
+                            "price_source": "catalog",
+                            "status": "unverified",
                         }
                     )
 

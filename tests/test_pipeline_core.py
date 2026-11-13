@@ -39,7 +39,8 @@ async def test_pipeline_stages_4_to_6_full_cycle():
     assert len(active_candidates) > 0
     for cand in active_candidates:
         assert len(cand.scraped_offers) > 0
-        assert cand.scraped_offers[0]["price"] > 0
+        if cand.source == "registry":
+            assert cand.scraped_offers[0]["price"] > 0
 
     # 5. Stage 5: Reviews and Video Mining
     review_stage = ReviewMiningStage()

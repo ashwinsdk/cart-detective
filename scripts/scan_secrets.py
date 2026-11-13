@@ -26,6 +26,9 @@ IGNORED_DIRS = {
     "venv",
     "__pycache__",
     ".cache",
+    # Runtime HTTP cache (data/cache/http, gitignored) holds third-party pages
+    # that embed public site keys.
+    "cache",
     ".ruff_cache",
     ".pytest_cache",
     "dist",

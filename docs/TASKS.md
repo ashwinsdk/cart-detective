@@ -100,3 +100,13 @@ This checklist tracks progress across Stage 1 and Stage 2. Update this file as e
 - [x] Verify clean setup under 10 minutes on fresh clone.
 - [ ] Tag release `v0.1.0`.
 - [ ] Acceptance Criteria: 100% passing tests, green CI on all branches, zero compliance violations.
+
+### Phase 11: Search Relevance
+- [x] Branch: `phase/11-search-relevance`
+- [x] Add `backend/pipeline/relevance.py` (query terms, synonyms, listing, accessory, storefront, and product URL checks).
+- [x] Remove query-ignoring registry fallback, single-word category matching, and synthesized brand products from discovery.
+- [x] Stop fabricating prices for web-derived candidates; treat catalog prices as unverified.
+- [x] Add relevance and budget gates in verification; sort offers best first; keep unavailable status.
+- [x] Fix `fetcher.fetch` timeout argument so Stage 4 and SearXNG actually fetch pages.
+- [x] Add offline regression tests in `tests/test_search_relevance.py`.
+- [x] Acceptance Criteria: Out-of-catalog queries return an explained empty result, never unrelated products.

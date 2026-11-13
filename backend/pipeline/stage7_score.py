@@ -69,8 +69,11 @@ class ScoringStage:
                 f"Top recommendation is {top_item.title} with an overall score of {top_score}/100."
             )
         else:
+            query = ctx.spec.product_type if ctx.spec else "your query"
             ctx.decision_rationale = (
-                "No candidates met minimum brand reliability and budget constraints."
+                f"No relevant products were found for '{query}'. Unrelated items are "
+                "not shown. Try a more specific product name, a wider budget, or "
+                "fewer brand filters."
             )
 
         duration = (time.monotonic() - start_time) * 1000.0

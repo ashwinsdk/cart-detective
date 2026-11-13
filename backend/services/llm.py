@@ -106,17 +106,17 @@ class HeuristicProvider(BaseLLMProvider):
         if "riding jacket" in p_lower:
             standards.extend(["CE Level 2", "CE Level 1"])
             mandatory_specs.extend(["Elbow armor", "Shoulder armor"])
-        elif "helmet" in p_lower or "helm" in p_lower:
+        elif re.search(r"\bhelmets?\b", p_lower):
             standards.extend(["ECE 22.06", "DOT", "ISI"])
             mandatory_specs.extend(["Impact protection shell", "Visor"])
             if "adventure" in p_lower or "off-road" in p_lower or "dual sport" in p_lower:
                 mandatory_specs.append("Peak visor")
-        elif "motorcycle" in p_lower or "riding" in p_lower:
+        elif re.search(r"\b(?:motorcycle|riding)\b", p_lower):
             standards.extend(["CE Level 2", "CE Level 1"])
             mandatory_specs.extend(["Elbow armor", "Shoulder armor"])
         elif "running shoe" in p_lower:
             mandatory_specs.extend(["Cushioning", "Breathable upper"])
-        elif "backpack" in p_lower or "bag" in p_lower:
+        elif re.search(r"\b(?:backpack|bag)s?\b", p_lower):
             mandatory_specs.extend(["Padded laptop sleeve", "Water resistant fabric"])
 
         if must_haves:
@@ -133,17 +133,17 @@ class HeuristicProvider(BaseLLMProvider):
 
         brands_included: list[str] = list(user_brands)
         if not brands_included:
-            if any(k in p_lower for k in ["helmet", "helm"]):
+            if re.search(r"\bhelmets?\b", p_lower):
                 brands_included = ["LS2", "Axor", "SMK", "MT Helmets"]
-            elif any(k in p_lower for k in ["riding", "motorcycle"]):
+            elif re.search(r"\b(?:riding|motorcycle)\b", p_lower):
                 brands_included = ["Rynox", "Royal Enfield", "Viaterra", "Alpinestars"]
-            elif any(k in p_lower for k in ["running", "shoe", "sneaker"]):
+            elif re.search(r"\b(?:running|shoes?|sneakers?)\b", p_lower):
                 brands_included = ["Asics", "Nike", "Puma", "Adidas"]
-            elif any(k in p_lower for k in ["backpack", "bag"]):
+            elif re.search(r"\b(?:backpack|bag)s?\b", p_lower):
                 brands_included = ["Mokobara", "American Tourister", "Lenovo", "Samsonite"]
-            elif any(k in p_lower for k in ["keyboard"]):
+            elif re.search(r"\bkeyboards?\b", p_lower):
                 brands_included = ["Keychron", "Logitech", "Ducky", "Royal Kludge"]
-            elif any(k in p_lower for k in ["headphone", "earphone", "audio"]):
+            elif re.search(r"\b(?:headphones?|earphones?)\b", p_lower):
                 brands_included = ["Sony", "Sennheiser", "Audio-Technica", "Bose"]
 
         # Automatic marketplace and store discovery if user specified none
